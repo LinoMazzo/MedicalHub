@@ -6,11 +6,11 @@ Corso: Ingegneria del Software (AA 2026/27)
 
 Docenti: Prof. Angelo Gargantini, Dott.ssa Silvia Bonfanti
 
-Team di Sviluppo (3 componenti): Franchini Mattia 1099581, Ghislanzoni Fabio 1099423,
+Team di Sviluppo (4 componenti): Franchini Mattia 1099581, Ghislanzoni Fabio 1099423,
 
-Mazzoleni Lino 1098962
+Mazzoleni Lino 1098962, Ivasco Riccardo 1101140
 
-Versione: 1.0.0 del 01-10-2026
+Versione: 1.0.1 del 03-10-2026
 
 ## 1. Introduzione
 
@@ -42,13 +42,15 @@ Versione: 1.0.0 del 01-10-2026
 
 - Relazione con gli Stakeholder: Il team modella il sistema basandosi su scenari clinici reali di fisioterapia post-operatoria.
 
-- Ruoli nel Team (3 componenti):
+- Ruoli nel Team (4 componenti):
 
 - Mazzoleni Lino ()
 
 - Franchini Mattia ()
 
 - Ghislanzoni Fabio ()
+
+- Ivasco Riccardo ()
 
 (Nota: tutti e tre i membri parteciperanno comunque attivamente alla scrittura del codice Java e alle code review).
 
@@ -81,9 +83,9 @@ Versione: 1.0.0 del 01-10-2026
 
 ## 7. Personale
 
-- Dimensionamento: 3 persone.
+- Dimensionamento: 4 persone.
 
-- Impegno individuale: Circa 35-40 ore a persona, per un totale di circa 110-120 ore-uomo distribuite sull'arco di 6-8 settimane.
+- Impegno individuale: Circa 35-40 ore a persona, per un totale di circa 150-160 ore-uomo distribuite sull'arco di 6-8 settimane.
 
 - Formazione richiesta: Studio di JUnit, dei Design Pattern e delle funzionalità avanzate di Java.
 
@@ -109,7 +111,7 @@ CI/CD & Versioning: Git & GitHub per version control e issue tracking.
 
 ## 11. Risorse
 
-- Hardware: 3 computer personali per sviluppo e test.
+- Hardware: 4 computer personali per sviluppo e test.
 
 - Software & Tool:
 
@@ -123,7 +125,7 @@ CI/CD & Versioning: Git & GitHub per version control e issue tracking.
 
 ## 12. Budget e Programma Temporale
 
-- Budget Totale: ~120 ore-uomo complessive (zero costi finanziari, uso esclusivo di software open source/gratuito).
+- Budget Totale: ~160 ore-uomo complessive (zero costi finanziari, uso esclusivo di software open source/gratuito).
 
 - Cronoprogramma Milestone:
 

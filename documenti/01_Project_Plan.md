@@ -10,7 +10,11 @@ Team di Sviluppo (4 componenti): Franchini Mattia 1099581, Ghislanzoni Fabio 109
 
 Mazzoleni Lino 1098962, Ivasco Riccardo 1101140
 
-Versione: 1.0.1 del 03-10-2026
+### Storico delle Versioni
+| Versione | Data | Autori | Descrizione delle modifiche |
+| :--- | :--- | :--- | :--- |
+| **1.0.0** | 01/10/2026 | Team MedicalHub | Versione iniziale del Project Plan |
+| **1.0.1** | 03/10/2026 | Franchini Mattia | Aggiunta Membro del gruppo e aggiornamento budg/temp |
 
 ## 1. Introduzione
 

@@ -13,7 +13,7 @@ Progetto per il corso di **Ingegneria del Software**
 
 | Ruolo | Nome e Cognome | Matricola | Account GitHub |
 | :--- | :--- | :--- | :--- |
-| **Lead Analyst & QA Manager** | Franchini Mattia | 1099581 | @Franchini-Mattia(https://github.com/Franchini-Mattia) |
+| **Lead Analyst & QA Manager** | Franchini Mattia | 1099581 | [@Franchini-Mattia](https://github.com/Franchini-Mattia) |
 | **Software Architect & Modeler** | Mazzoleni Lino | 1098962 | [@LinoMazzo](https://github.com/LinoMazzo) |
 | **Lead Developer & Test Engineer** | Ghislanzoni Fabio | 1099423 | [@FabioGhislanzoni05](https://github.com/FabioGhislanzoni05) |
 | **Lead Developer & Test Engineer** | Ivasco Riccardo | 1101140 | [@riccardoivasco](https://github.com/riccardoivasco) |

@@ -4,6 +4,11 @@
 **Corso:** Ingegneria del Software (AA 2026/27)  
 **Team:** Franchini Mattia, Ghislanzoni Fabio, Mazzoleni Lino, Ivasco Riccardo  
 
+### Storico delle Versioni
+| Versione | Data | Autori | Descrizione delle modifiche |
+| :--- | :--- | :--- | :--- |
+| **1.0.0** | 13/10/2026 | Ghislanzoni Fabio | Versione iniziale del Documento di Gestione del Progetto |
+
 ---
 
 ## 2.1 Software Life Cycle

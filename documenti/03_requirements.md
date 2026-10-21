@@ -61,74 +61,190 @@ App mobile o portale web con API REST, integrazione con il Fascicolo Sanitario E
 
 ## 4. Requisiti specifici
 
-Ogni requisito ha un identificatore univoco (`REQ-I` interfacce, `REQ-F` funzionali, `REQ-NF` non funzionali) e una priorità MoSCoW tra parentesi. I valori di default sono configurabili (§4.5).
+Ogni requisito ha un identificatore univoco (`REQ-I` interfacce, `REQ-F` funzionali, `REQ-NF` non funzionali) e una priorità MoSCoW tra parentesi; dove utile, le tabelle riportano la motivazione del requisito. I valori di default sono configurabili (§4.5).
 
 ### 4.1 Interfacce esterne
 
-- **REQ-I-01 (M)** L'interfaccia, in italiano, deve mostrare solo le funzioni del ruolo dell'utente e validare i dati prima del salvataggio (campi obbligatori, intervalli di §4.5), indicando il campo errato.
-- **REQ-I-02 (S)** Le sedute devono essere consultabili per giorno o settimana, filtrate per fisioterapista o risorsa.
-- **REQ-I-03 (M)** La persistenza deve usare JDBC su un database H2 embedded; il log deve usare log4j 2, gestito come dipendenza Maven.
-- **REQ-I-04 (S)** Certificati e report devono essere esportabili in PDF.
+| ID | Requisito / Motivazione |
+|----|-------------------------|
+| REQ-I-01 (M) | L'interfaccia, in italiano, deve mostrare solo le funzioni del ruolo dell'utente e validare i dati prima del salvataggio (campi obbligatori, intervalli di §4.5), indicando il campo errato.<br>*Motivazione:* gli utenti hanno competenze informatiche eterogenee e poco tempo (§3.2): un'interfaccia limitata al proprio ruolo e una validazione immediata riducono gli errori di inserimento. |
+| REQ-I-02 (S) | Le sedute devono essere consultabili per giorno o settimana, filtrate per fisioterapista o risorsa.<br>*Motivazione:* sostituisce le agende cartacee: il fisioterapista vede il proprio turno, la Segreteria l'occupazione di sale e macchinari. |
+| REQ-I-03 (M) | La persistenza deve usare JDBC su un database H2 embedded; il log deve usare log4j 2, gestito come dipendenza Maven.<br>*Motivazione:* i docenti devono eseguire il progetto su un altro PC con solo JDK e Maven, senza installare un DBMS. |
+| REQ-I-04 (S) | Certificati e report devono essere esportabili in PDF.<br>*Motivazione:* l'applicazione non ha rete né email: il PDF permette di consegnare certificati e report fuori dal sistema. |
 
 ### 4.2 Requisiti funzionali
 
 **Accesso e anagrafica**
 
-- **REQ-F-01 (M)** Il sistema deve consentire l'accesso solo con credenziali personali; ogni utente ha un ruolo (Paziente, Medico, Fisioterapista, Segreteria) e vede solo funzioni e dati di sua competenza.
-- **REQ-F-02 (S)** La Segreteria deve poter creare, modificare e disattivare gli account.
-- **REQ-F-03 (M)** La Segreteria deve poter registrare un paziente con anagrafica, codice fiscale (formalmente valido e univoco), sport e tipo di pagante: privato, convenzione con federazione o assicurazione.
-- **REQ-F-04 (M)** La Segreteria deve poter assegnare a ogni paziente un medico curante e un fisioterapista di riferimento.
-- **REQ-F-05 (C)** La Segreteria deve poter registrare pacchetti di sedute con scadenza.
+| ID | Requisito / Motivazione |
+|----|-------------------------|
+| REQ-F-01 (M) | Il sistema deve consentire l'accesso solo con credenziali personali; ogni utente ha un ruolo (Paziente, Medico, Fisioterapista, Segreteria) e vede solo funzioni e dati di sua competenza.<br>*Motivazione:* i dati sanitari sono categorie particolari di dati personali e richiedono controllo degli accessi e tracciabilità. |
+| REQ-F-02 (S) | La Segreteria deve poter creare, modificare e disattivare gli account. |
+| REQ-F-03 (M) | La Segreteria deve poter registrare un paziente con anagrafica, codice fiscale (formalmente valido e univoco), sport e tipo di pagante: privato, convenzione con federazione o assicurazione.<br>*Motivazione:* il codice fiscale univoco evita anagrafiche duplicate; il tipo di pagante determina l'importo delle sedute (REQ-F-28). |
+| REQ-F-04 (M) | La Segreteria deve poter assegnare a ogni paziente un medico curante e un fisioterapista di riferimento.<br>*Motivazione:* continuità tra medico e fisioterapista (§1.1): gli alert vanno al medico curante (REQ-F-18) e le sedute si prenotano con il fisioterapista di riferimento (REQ-F-11). |
+| REQ-F-05 (C) | La Segreteria deve poter registrare pacchetti di sedute con scadenza. |
 
 **Visita e prescrizione**
 
-- **REQ-F-06 (M)** Il Medico deve poter registrare la visita diagnostica: diagnosi, articolazione e lato, valori basali di ROM, dolore e forza.
-- **REQ-F-07 (M)** Il Medico deve poter creare un piano in stato BOZZA copiando un protocollo del catalogo o da zero, e personalizzarne fasi, terapie, sedute, obiettivi e soglie di alert.
-- **REQ-F-08 (M)** Il Medico deve poter definire criteri di uscita misurabili nella forma *parametro – operatore – soglia*.
-- **REQ-F-09 (M)** La prescrizione (BOZZA → PRESCRITTO) deve essere consentita solo se ogni fase ha almeno una terapia e una seduta, esiste almeno un criterio di uscita e il paziente non ha un altro piano aperto per la stessa articolazione e lo stesso lato.
+| ID | Requisito / Motivazione |
+|----|-------------------------|
+| REQ-F-06 (M) | Il Medico deve poter registrare la visita diagnostica: diagnosi, articolazione e lato, valori basali di ROM, dolore e forza.<br>*Motivazione:* i valori basali sono il riferimento per misurare i progressi (§4.5). |
+| REQ-F-07 (M) | Il Medico deve poter creare un piano in stato BOZZA copiando un protocollo del catalogo o da zero, e personalizzarne fasi, terapie, sedute, obiettivi e soglie di alert.<br>*Motivazione:* il protocollo velocizza la prescrizione dei casi frequenti, come il Post-Op LCA, ma ogni paziente richiede adattamenti. |
+| REQ-F-08 (M) | Il Medico deve poter definire criteri di uscita misurabili nella forma *parametro – operatore – soglia*.<br>*Motivazione:* l'idoneità deve essere rilasciata solo su base oggettiva (§1.1). |
+| REQ-F-09 (M) | La prescrizione (BOZZA → PRESCRITTO) deve essere consentita solo se ogni fase ha almeno una terapia e una seduta, esiste almeno un criterio di uscita e il paziente non ha un altro piano aperto per la stessa articolazione e lo stesso lato.<br>*Motivazione:* senza criteri di uscita l'idoneità non avrebbe base oggettiva; due piani aperti sulla stessa articolazione e lo stesso lato sarebbero in conflitto. |
 
 **Risorse e prenotazioni**
 
-- **REQ-F-10 (M)** La Segreteria deve poter gestire sale e macchinari (tipo, capacità, indisponibilità) e orari e assenze dei fisioterapisti; ogni terapia indica il tipo di risorsa richiesto e la durata.
-- **REQ-F-11 (M)** Una prenotazione deve essere accettata solo se, per tutta la seduta e negli orari di apertura, sono liberi insieme il fisioterapista di riferimento, una risorsa del tipo richiesto con capacità residua e il paziente.
-- **REQ-F-12 (S)** Se la fascia richiesta non è disponibile, il sistema deve proporre le prime 3 fasce compatibili nei 14 giorni successivi.
-- **REQ-F-13 (M)** Il Paziente deve poter prenotare le proprie sedute e la Segreteria quelle di chiunque, solo per piani PRESCRITTO o IN_CORSO ed entro le sedute previste dalla fase corrente.
-- **REQ-F-14 (S)** Paziente e Segreteria devono poter annullare una seduta; con meno di 24 ore di preavviso l'annullamento è tardivo.
-- **REQ-F-15 (M)** Una seduta deve essere PRENOTATA, ESEGUITA, NON_PRESENTATO o ANNULLATA; solo da PRENOTATA si passa agli altri stati.
+| ID | Requisito / Motivazione |
+|----|-------------------------|
+| REQ-F-10 (M) | La Segreteria deve poter gestire sale e macchinari (tipo, capacità, indisponibilità) e orari e assenze dei fisioterapisti; ogni terapia indica il tipo di risorsa richiesto e la durata.<br>*Motivazione:* sono i dati su cui si verifica la disponibilità al momento della prenotazione (REQ-F-11). |
+| REQ-F-11 (M) | Una prenotazione deve essere accettata solo se, per tutta la seduta e negli orari di apertura, sono liberi insieme il fisioterapista di riferimento, una risorsa del tipo richiesto con capacità residua e il paziente.<br>*Motivazione:* evita conflitti sulle risorse ad alta richiesta come Tecar, laser e vasca (§1.1). |
+| REQ-F-12 (S) | Se la fascia richiesta non è disponibile, il sistema deve proporre le prime 3 fasce compatibili nei 14 giorni successivi. |
+| REQ-F-13 (M) | Il Paziente deve poter prenotare le proprie sedute e la Segreteria quelle di chiunque, solo per piani PRESCRITTO o IN_CORSO ed entro le sedute previste dalla fase corrente.<br>*Motivazione:* ogni seduta prenotata deve corrispondere a quanto prescritto dal medico. |
+| REQ-F-14 (S) | Paziente e Segreteria devono poter annullare una seduta; con meno di 24 ore di preavviso l'annullamento è tardivo.<br>*Motivazione:* l'annullamento tardivo comporta una penale (§4.5). |
+| REQ-F-15 (M) | Una seduta deve essere PRENOTATA, ESEGUITA, NON_PRESENTATO o ANNULLATA; solo da PRENOTATA si passa agli altri stati.<br>*Motivazione:* lo stato finale della seduta determina importo o penale (§4.5), quindi non deve più cambiare. |
 
 **Sedute e monitoraggio**
 
-- **REQ-F-16 (M)** Il Fisioterapista deve poter consultare la propria agenda e lo storico dei parametri di ogni paziente.
-- **REQ-F-17 (M)** Il Fisioterapista deve poter registrare l'esito di una seduta (terapie, ROM in flessione ed estensione, dolore NRS, carichi, note) o l'assenza del paziente; la prima seduta eseguita porta il piano in IN_CORSO.
-- **REQ-F-18 (M)** Il sistema deve inviare un alert al medico curante se il dolore è pari o superiore alla soglia (default 7), se la flessione cala più della soglia rispetto alla misura precedente (default 10°) o se il fisioterapista segnala una complicanza.
-- **REQ-F-19 (S)** Il Paziente deve poter compilare un questionario periodico di autovalutazione (default ogni 7 giorni); un dolore pari o superiore alla soglia genera un alert.
-- **REQ-F-20 (M)** Il Medico deve poter chiudere ogni alert con un esito: nessuna azione o sospensione del piano.
-- **REQ-F-21 (S)** Il sistema deve mostrare l'andamento dei parametri e la percentuale di raggiungimento degli obiettivi (§4.5).
+| ID | Requisito / Motivazione |
+|----|-------------------------|
+| REQ-F-16 (M) | Il Fisioterapista deve poter consultare la propria agenda e lo storico dei parametri di ogni paziente.<br>*Motivazione:* il fisioterapista usa il sistema durante il turno (§3.2) e confronta ogni misura con le precedenti. |
+| REQ-F-17 (M) | Il Fisioterapista deve poter registrare l'esito di una seduta (terapie, ROM in flessione ed estensione, dolore NRS, carichi, note) o l'assenza del paziente; la prima seduta eseguita porta il piano in IN_CORSO.<br>*Motivazione:* le misure registrate alimentano gli alert (REQ-F-18) e la verifica dei criteri di uscita (REQ-F-24). |
+| REQ-F-18 (M) | Il sistema deve inviare un alert al medico curante se il dolore è pari o superiore alla soglia (default 7), se la flessione cala più della soglia rispetto alla misura precedente (default 10°) o se il fisioterapista segnala una complicanza.<br>*Motivazione:* le complicanze vanno rilevate tempestivamente (§1.1). |
+| REQ-F-19 (S) | Il Paziente deve poter compilare un questionario periodico di autovalutazione (default ogni 7 giorni); un dolore pari o superiore alla soglia genera un alert.<br>*Motivazione:* rileva il dolore anche tra una seduta e l'altra. |
+| REQ-F-20 (M) | Il Medico deve poter chiudere ogni alert con un esito: nessuna azione o sospensione del piano. |
+| REQ-F-21 (S) | Il sistema deve mostrare l'andamento dei parametri e la percentuale di raggiungimento degli obiettivi (§4.5).<br>*Motivazione:* rende oggettivo il monitoraggio dei progressi (§1.1). |
 
 **Rivalutazione e idoneità**
 
-- **REQ-F-22 (M)** Esaurite le sedute della fase, il piano deve passare in IN_RIVALUTAZIONE_INTERMEDIA; il Medico approva la fase successiva, solo se i criteri di passaggio sono superati, oppure prolunga la fase.
-- **REQ-F-23 (M)** Il Medico deve poter sospendere un piano per complicanza (il sistema annulla le sedute future e libera le risorse), riprenderlo dallo stato in cui era o chiuderlo (ANNULLATO).
-- **REQ-F-24 (M)** Dopo la visita finale il piano deve passare in COMPLETATO_CON_SUCCESSO solo se tutti i criteri di uscita sono superati; altrimenti il sistema elenca quelli mancanti.
-- **REQ-F-25 (M)** Il certificato di idoneità deve poter essere emesso solo per piani COMPLETATO_CON_SUCCESSO, con firma del medico curante (reinserimento della password); riporta identificativo, data, criteri superati e impronta hash, e porta il piano in IDONEITA_RILASCIATA.
-- **REQ-F-26 (S)** Il Paziente deve poter scaricare il certificato in PDF.
-- **REQ-F-27 (C)** Il sistema deve sollecitare il medico se un piano resta in rivalutazione oltre 7 giorni o sospeso oltre 60.
+| ID | Requisito / Motivazione |
+|----|-------------------------|
+| REQ-F-22 (M) | Esaurite le sedute della fase, il piano deve passare in IN_RIVALUTAZIONE_INTERMEDIA; il Medico approva la fase successiva, solo se i criteri di passaggio sono superati, oppure prolunga la fase.<br>*Motivazione:* passare di fase prima di aver superato i criteri espone il paziente a complicanze. |
+| REQ-F-23 (M) | Il Medico deve poter sospendere un piano per complicanza (il sistema annulla le sedute future e libera le risorse), riprenderlo dallo stato in cui era o chiuderlo (ANNULLATO).<br>*Motivazione:* le risorse non restano bloccate da sedute che non si svolgeranno. |
+| REQ-F-24 (M) | Dopo la visita finale il piano deve passare in COMPLETATO_CON_SUCCESSO solo se tutti i criteri di uscita sono superati; altrimenti il sistema elenca quelli mancanti.<br>*Motivazione:* un errore sui criteri di uscita rimanderebbe in campo un atleta non guarito (§5). |
+| REQ-F-25 (M) | Il certificato di idoneità deve poter essere emesso solo per piani COMPLETATO_CON_SUCCESSO, con firma del medico curante (reinserimento della password); riporta identificativo, data, criteri superati e impronta hash, e porta il piano in IDONEITA_RILASCIATA.<br>*Motivazione:* la firma è applicativa (§3.3): la password identifica il medico e l'impronta hash rende rilevabile ogni modifica del certificato. |
+| REQ-F-26 (S) | Il Paziente deve poter scaricare il certificato in PDF. |
+| REQ-F-27 (C) | Il sistema deve sollecitare il medico se un piano resta in rivalutazione oltre 7 giorni o sospeso oltre 60.<br>*Motivazione:* evita che un piano resti fermo per dimenticanza. |
 
 **Fatturazione, notifiche e report**
 
-- **REQ-F-28 (S)** Il sistema deve calcolare l'importo di ogni seduta in base al tipo di pagante, con penale per annullamenti tardivi e assenze (§4.5).
-- **REQ-F-29 (S)** La Segreteria deve poter generare il riepilogo mensile per paziente, separando la quota del paziente da quella dell'assicurazione.
-- **REQ-F-30 (M)** Il sistema deve notificare nella bacheca interna alert, cambi di stato del piano, prenotazioni e annullamenti agli utenti interessati.
-- **REQ-F-31 (S)** Il sistema deve generare un promemoria per il paziente 24 ore prima di ogni seduta e alla scadenza dei questionari.
-- **REQ-F-32 (S)** Il Medico deve poter generare in PDF il report di avanzamento del piano e il Fisioterapista la scheda degli esercizi domiciliari.
+| ID | Requisito / Motivazione |
+|----|-------------------------|
+| REQ-F-28 (S) | Il sistema deve calcolare l'importo di ogni seduta in base al tipo di pagante, con penale per annullamenti tardivi e assenze (§4.5).<br>*Motivazione:* privati, convenzioni e assicurazioni pagano in modo diverso; la penale scoraggia annullamenti tardivi e assenze, che lasciano risorse inutilizzate. |
+| REQ-F-29 (S) | La Segreteria deve poter generare il riepilogo mensile per paziente, separando la quota del paziente da quella dell'assicurazione.<br>*Motivazione:* l'assicurazione copre solo una parte dell'importo, entro un massimale (§4.5). |
+| REQ-F-30 (M) | Il sistema deve notificare nella bacheca interna alert, cambi di stato del piano, prenotazioni e annullamenti agli utenti interessati.<br>*Motivazione:* tiene allineati medico, fisioterapista, paziente e Segreteria senza email né SMS (§3.3). |
+| REQ-F-31 (S) | Il sistema deve generare un promemoria per il paziente 24 ore prima di ogni seduta e alla scadenza dei questionari.<br>*Motivazione:* riduce assenze e questionari non compilati. |
+| REQ-F-32 (S) | Il Medico deve poter generare in PDF il report di avanzamento del piano e il Fisioterapista la scheda degli esercizi domiciliari. |
 
 ### 4.3 Casi d'uso
 
 Gli attori Paziente, Medico, Fisioterapista e Segreteria specializzano l'attore astratto **Utente** (*Autenticarsi*); Medico e Fisioterapista specializzano anche **Personale sanitario** (*Consultare cartella riabilitativa*). L'attore **Timer** avvia promemoria e solleciti.
 
-![Diagramma dei casi d'uso di MedicalHub](img/use_case_diagram.png)
+Il diagramma dei casi d'uso è diviso in quattro viste per leggibilità (sorgente completa: `MedicalHub.mdj`).
 
-*Figura 1 — Diagramma dei casi d'uso (sorgente: `MedicalHub.mdj`).*
+```mermaid
+flowchart BT
+    UT["«actor»<br/>Utente (astratto)"]
+    PS["«actor»<br/>Personale sanitario (astratto)"]
+    PAZ["«actor»<br/>Paziente"]
+    SEG["«actor»<br/>Segreteria"]
+    MED["«actor»<br/>Medico"]
+    FIS["«actor»<br/>Fisioterapista"]
+    subgraph SYS ["MedicalHub"]
+        UC01(["UC-01 Autenticarsi"])
+        UC20(["UC-20 Consultare cartella riabilitativa"])
+    end
+    PAZ --> UT
+    SEG --> UT
+    MED --> UT
+    FIS --> UT
+    MED --> PS
+    FIS --> PS
+    UC01 --- UT
+    UC20 --- PS
+```
+
+*Figura 1a — Attori astratti e generalizzazioni (le frecce tra attori indicano la specializzazione; gli attori sono marcati «actor»).*
+
+```mermaid
+flowchart LR
+    PAZ["«actor»<br/>Paziente"]
+    SEG["«actor»<br/>Segreteria"]
+    subgraph SYS ["MedicalHub"]
+        UC19(["UC-19 Scaricare certificato"])
+        UC14(["UC-14 Compilare questionario"])
+        UC07(["UC-07 Prenotare seduta"])
+        UC08(["UC-08 Verificare disponibilità congiunta"])
+        UC09(["UC-09 Proporre fasce alternative"])
+        UC10(["UC-10 Annullare seduta"])
+        UC03(["UC-03 Registrare paziente"])
+        UC04(["UC-04 Gestire risorse e disponibilità"])
+        UC21(["UC-21 Gestire fatturazione"])
+        UC02(["UC-02 Gestire account"])
+    end
+    PAZ --- UC19
+    PAZ --- UC14
+    PAZ --- UC07
+    PAZ --- UC10
+    UC07 --- SEG
+    UC10 --- SEG
+    UC03 --- SEG
+    UC04 --- SEG
+    UC21 --- SEG
+    UC02 --- SEG
+    UC07 -. "«include»" .-> UC08
+    UC09 -. "«extend»" .-> UC07
+```
+
+*Figura 1b — Casi d'uso di Paziente e Segreteria.*
+
+```mermaid
+flowchart LR
+    MED["«actor»<br/>Medico"]
+    subgraph SYS ["MedicalHub"]
+        UC05(["UC-05 Eseguire visita diagnostica"])
+        UC06(["UC-06 Prescrivere piano riabilitativo"])
+        UC15(["UC-15 Gestire alert"])
+        UC16(["UC-16 Rivalutare piano"])
+        UC17(["UC-17 Sospendere, riprendere o chiudere piano"])
+        UC18(["UC-18 Rilasciare idoneità sportiva"])
+        UC22(["UC-22 Generare report e schede"])
+    end
+    MED --- UC05
+    MED --- UC06
+    MED --- UC15
+    MED --- UC16
+    MED --- UC17
+    MED --- UC18
+    MED --- UC22
+```
+
+*Figura 1c — Casi d'uso del Medico.*
+
+```mermaid
+flowchart LR
+    FIS["«actor»<br/>Fisioterapista"]
+    PAZ["«actor»<br/>Paziente"]
+    TIM["«actor»<br/>Timer"]
+    subgraph SYS ["MedicalHub"]
+        UC11(["UC-11 Registrare esito seduta"])
+        UC13(["UC-13 Segnalare complicanza"])
+        UC22(["UC-22 Generare report e schede"])
+        UC12(["UC-12 Generare alert clinico"])
+        UC14(["UC-14 Compilare questionario"])
+        UC23(["UC-23 Inviare promemoria e solleciti"])
+    end
+    FIS --- UC11
+    FIS --- UC13
+    FIS --- UC22
+    UC12 -. "«extend»" .-> UC11
+    UC12 -. "«extend»" .-> UC14
+    UC13 -. "«include»" .-> UC12
+    UC14 --- PAZ
+    UC23 --- TIM
+```
+
+*Figura 1d — Casi d'uso di Fisioterapista e Timer, con la generazione degli alert.*
 
 Relazioni: *Prenotare seduta* «include» *Verificare disponibilità congiunta*; *Proporre fasce alternative* «extend» *Prenotare seduta* (punto di estensione: fascia non disponibile); *Generare alert clinico* «extend» *Registrare esito seduta* e *Compilare questionario* (soglia superata); *Segnalare complicanza* «include» *Generare alert clinico*.
 
@@ -273,5 +389,21 @@ Come nel cap. 6 di [2] si usa il modello ISO/IEC 9126 [4], trattando la sicurezz
 - **Usabilità (media).** Il personale ha poco tempo e registra i dati durante il turno: interfaccia per ruolo e validazione immediata (REQ-I-01, REQ-NF-09).
 - **Portabilità (media).** I docenti devono eseguire il progetto su un altro PC: Maven, H2 embedded, percorsi relativi (REQ-NF-02, REQ-NF-10).
 - **Efficienza (bassa).** I volumi di un singolo centro sono modesti (REQ-NF-01).
+
+**Qualità esterne e interne.** Seguendo la distinzione della ISO/IEC 9126, le qualità esterne (accuratezza, sicurezza, affidabilità, usabilità, portabilità, efficienza) si osservano sul sistema in esecuzione e si verificano con test e prove d'uso; la manutenibilità è una qualità interna e si misura sul codice con metriche statiche.
+
+**Verifica.** Ogni qualità ha un controllo concreto, ripetuto a ogni sprint:
+
+| Qualità | Come si verifica | Requisiti |
+|---|---|---|
+| Accuratezza | Test JUnit sui valori limite di formule, soglie e disponibilità congiunta | REQ-F-11, REQ-F-24, REQ-F-28 |
+| Sicurezza | Test sull'accesso per ruolo e sull'hash delle password; controllo che il log di audit non contenga dati sanitari | REQ-F-01, REQ-NF-04 |
+| Affidabilità | Un test per ogni transizione del ciclo di vita (§4.4), comprese quelle non ammesse; verifica che un'operazione fallita su più entità non lasci modifiche parziali | REQ-NF-06 |
+| Manutenibilità | Copertura con EclEmma/JaCoCo, complessità e problemi critici con SonarLint/PMD, controllo dei cicli tra package | REQ-NF-03, REQ-NF-07, REQ-NF-08 |
+| Usabilità | Prova con una persona esterna al team nel ruolo di fisioterapista, cronometrando la registrazione di una seduta | REQ-NF-09 |
+| Portabilità | `mvn clean test` su un PC con solo JDK e Maven, su Windows, macOS e Linux | REQ-NF-02, REQ-NF-10 |
+| Efficienza | Test con dati generati ai volumi di REQ-NF-01 | REQ-NF-01 |
+
+**Qualità non perseguite.** L'interoperabilità non è un obiettivo della versione 1.0: il sistema non scambia dati con altri sistemi (§3.4).
 
 **Compromessi.** La riautenticazione è richiesta solo per la firma dell'idoneità, per non appesantire l'uso quotidiano; con circa 110 ore-uomo i requisiti *Could* si sacrificano per primi, per non compromettere qualità e test dei *Must*.

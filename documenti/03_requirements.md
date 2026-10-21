@@ -1,4 +1,4 @@
-# MedicalHub — Documento 3: Requisiti
+# 03_Requirements.md
 
 *Specifica dei requisiti (IEEE 830) e qualità del software*
 
@@ -6,9 +6,9 @@
 - **Docenti:** Prof. Angelo Gargantini, Dott.ssa Silvia Bonfanti
 - **Team:** Franchini Mattia (1099581), Ghislanzoni Fabio (1099423), Mazzoleni Lino (1098962), Ivasco Riccardo (1101140)
 
-| Versione | Data | Modifiche |
-|---|---|---|
-| 1.0.0 | 12-10-2026 | Prima stesura |
+| Versione | Data | Autore | Descrizione delle modifiche |
+|---|---|---|---|
+| 1.0.0 | 12-10-2026 | Ivasco Riccardo | Prima stesura
 
 ## 1. Introduzione
 
@@ -25,30 +25,14 @@ MedicalHub è un'applicazione per centri di fisioterapia e medicina dello sport 
 - **Alert clinico**: segnalazione automatica al medico curante per un parametro oltre soglia o una complicanza.
 - **ROM** (*Range of Motion*): ampiezza del movimento articolare, in gradi. **NRS** (*Numeric Rating Scale*): dolore da 0 a 10. **LSI** (*Limb Symmetry Index*): rapporto percentuale tra arto operato e arto sano in un test di forza o di salto.
 
-### 1.3 Riferimenti
-
-1. IEEE Std 830-1998, *Recommended Practice for Software Requirements Specifications*.
-2. H. van Vliet, *Software Engineering: Principles and Practice*, 3ª ed., Wiley, 2008.
-3. M. Seidl et al., *UML @ Classroom*, Springer, 2015.
-4. ISO/IEC 9126-1:2001, *Product quality — Quality model* (oggi ISO/IEC 25010).
-5. MedicalHub, *Project Plan*, v1.0.0 del 01-10-2026.
 
 ## 2. Elicitazione dei requisiti
 
-**Stakeholder e fonti.** Gli stakeholder diretti sono i quattro attori (§3.2); quelli indiretti sono la direzione del centro, le federazioni sportive e le assicurazioni (convenzioni, certificati) e i docenti, che fissano i vincoli tecnologici. Le fonti sono scenari clinici di riabilitazione post-operatoria, protocolli riabilitativi a fasi e gli strumenti oggi in uso nei centri (agende cartacee, schede di valutazione, fogli Excel).
-
-**Tecniche** (cap. 9 di [2]):
-
-- *brainstorming* di team su problemi del dominio, attori e flussi, da cui è nata la proposta di progetto;
-- *analisi del dominio* dei protocolli a fasi e delle misure di recupero (ROM, NRS, LSI), da cui glossario e criteri di uscita;
-- *analisi basata su scenari*: scenari concreti per ogni attore, generalizzati nei casi d'uso (§4.3);
-- *analisi dei moduli*: dati registrati su agende e schede di valutazione, da cui i requisiti sui dati (§4.5).
+**Stakeholder e fonti.** Gli stakeholder diretti sono i quattro attori (§3.2); quelli indiretti sono i docenti, che fissano i vincoli tecnologici. Le fonti sono scenari clinici di riabilitazione post-operatoria, protocolli riabilitativi a fasi e gli strumenti oggi in uso nei centri (agende cartacee, schede di valutazione, fogli Excel).
 
 **Scenari di esempio.** *S1*: Luca, calciatore operato al crociato, viene registrato con la convenzione della sua federazione; la dottoressa crea il piano dal protocollo Post-Op LCA, Luca prenota solo in orari in cui fisioterapista e sala sono liberi e, superati i test di uscita, riceve l'idoneità. *S2*: in una seduta il fisioterapista registra dolore 8/10 e una flessione di 15° inferiore alla volta precedente; il sistema avvisa la dottoressa, che sospende il piano e lo riprende dopo la visita di controllo.
 
-**Prioritizzazione.** Come previsto dal Project Plan si usa MoSCoW: **M** = nucleo del sistema, implementato e testato entro la milestone M3; **S** = importante, entro M4; **C** = solo se il tempo lo consente; i *Won't have* sono in §3.4. I requisiti funzionali sono 32: 20 M, 10 S, 2 C.
-
-**Validazione.** Prima di chiudere la milestone M1 il documento è rivisto collegialmente, ripercorrendo gli scenari sui casi d'uso e sul ciclo di vita del piano. Rispetto alle proprietà IEEE 830: identificatori univoci collegati a issue GitHub e test (tracciabilità), soglie e formule numeriche (non ambiguità e verificabilità), priorità MoSCoW (classificazione per importanza), modifiche solo tramite issue `change-request` (modificabilità).
+**Prioritizzazione.** Come previsto dal Project Plan si usa MoSCoW: **Must have** = nucleo del sistema, implementato e testato entro la milestone M3; **Should have** = importante, entro M4; **Could have** = solo se il tempo lo consente; i **Won't have** sono in §3.4. I requisiti funzionali sono 32: 20 M, 10 S, 2 C.
 
 ## 3. Descrizione generale
 
@@ -65,12 +49,11 @@ MedicalHub è un prodotto nuovo e autonomo che sostituisce carta e fogli di calc
 
 ### 3.3 Vincoli e assunzioni
 
-- Vincoli del corso: Java, progetto Eclipse con Maven e almeno una dipendenza (log4j), database embedded, nessun servizio esterno, nessun percorso assoluto, sviluppo su GitHub; circa 110 ore-uomo in 4 sprint.
+- Vincoli del corso: Java, progetto Eclipse con Maven, database embedded, nessun servizio esterno, nessun percorso assoluto, sviluppo su GitHub; circa 110 ore-uomo in 4 sprint.
 - I dati sanitari sono categorie particolari di dati personali (GDPR, art. 9): il prototipo usa solo dati fittizi, ma con controllo degli accessi e tracciabilità.
-- Tutti i ruoli usano la stessa installazione, con login personale; un solo centro, con orari di apertura configurabili.
 - Le misure sono inserite a mano; le notifiche sono interne all'applicazione (niente email o SMS).
-- La firma dell'idoneità è *applicativa* (riautenticazione del medico e impronta hash del certificato), non una firma digitale qualificata.
-- Protocolli, soglie e tariffe sono dati di esempio, non validati clinicamente.
+- La firma dell'idoneità è **applicativa** (riautenticazione del medico e impronta hash del certificato).
+- Protocolli, soglie e tariffe sono dati di esempio.
 
 ### 3.4 Esclusi dalla versione 1.0 (*Won't have*)
 

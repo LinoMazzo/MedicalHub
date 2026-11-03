@@ -56,7 +56,7 @@ Mazzoleni Lino 1098962, Ivasco Riccardo 1101140
 
 - Ivasco Riccardo ()
 
-(Nota: tutti e tre i membri parteciperanno comunque attivamente alla scrittura del codice Java e alle code review).
+(Nota: tutti e quattro i membri parteciperanno comunque attivamente alla scrittura del codice Java e alle code review).
 
 ## 4. Standard, Linee Guida, Procedure
 

@@ -17,7 +17,8 @@
 | :--- | :--- | :--- | :--- |
 | **1.0.0** | 01/10/2026 | Team MedicalHub | Versione iniziale del Project Plan |
 | **1.0.1** | 03/10/2026 | Franchini Mattia | Aggiunta quarto membro e ricalibrazione budget/tempistiche |
-| **1.1.0** | 05/11/2026 | Mazzoleni Lino | Dettaglio ruoli individuali, analisi rischi operativi, tassonomia della qualità di McCall, standard IEEE 830/1016 e WBS completa |
+| **1.1.0** | 05/11/2026 | Mazzoleni Lino | Dettaglio ruoli individuali, analisi rischi operativi, tassonomia della qualità di McCall, standard IEEE 830 e WBS completa |
+| **1.1.1** | 06/11/2026 | Mazzoleni Lino, Franchini Mattia | Migliorie generali al documento |
 
 
 ## 1. Introduzione
@@ -59,9 +60,8 @@
 ## 4. Standard, Linee Guida, Procedure
 
 * **Standard di Codifica:** *Oracle Java Code Conventions* (stile camelCase, visibilità restrittiva dei campi, assenza di dipendenze cicliche tra package).
-* **Specifiche dei Requisiti:** Standard **IEEE 830-1998** (*Recommended Practice for Software Requirements Specifications*), con identificazione gerarchica e univoca di requisiti funzionali (es. `REQ-F-01`) e non funzionali (es. `REQ-NF-01`).
-* **Documentazione del Design:** Standard **IEEE 1016** (*Software Design Descriptions*), strutturando la descrizione architetturale per viste (decomposizione, dipendenze, interfacce, dettagli).
-* **Modellazione UML:** Standard UML 2.x mediante tool ufficiale **StarUML v5**.
+* **Specifiche dei Requisiti:** Standard **IEEE 830** (*Recommended Practice for Software Requirements Specifications*), con identificazione gerarchica e univoca di requisiti funzionali (es. `REQ-F-01`) e non funzionali (es. `REQ-NF-01`).
+* **Modellazione UML:**  UML mediante tool ufficiale **StarUML v5**.
 * **Controllo Versione (Feature-Branch Workflow):**
   * **Branch `main`:** Ramo protetto (Branch Protection Rule attiva). Contiene esclusivamente versioni stabili, collaudate e conformi alle release (tag `v1.0.0`, ecc.). Vietato il commit diretto e il force-push.
   * **Branch `develop`:** Ramo principale di integrazione continua, su cui confluiscono tutti i contributi verificati.
@@ -181,63 +181,56 @@ La modellazione concettuale e dettagliata è realizzata tramite **StarUML v5** a
 La qualità del sistema è governata formalmente attraverso la **Tassonomia della Qualità di McCall**, articolata sulle tre dimensioni fondamentali:
 
 ### 1. Product Operations (Operazioni sul Prodotto)
-* **Correttezza (Correctness):** Il sistema soddisfa appieno i requisiti clinici funzionali specificati.  
-  *Verifica:* Esecuzione automatizzata della suite di test JUnit 5 integrata nella build Maven (`mvn test`).
+* **Correttezza (Correctness):** Il sistema soddisfa appieno i requisiti clinici funzionali.  
+  *Verifica:* Esecuzione automatizzata della suite di test JUnit 5.
 * **Affidabilità (Reliability):** Il software gestisce stati d'errore o input incongrui senza crash imprevisti.  
-  *Verifica:* Incapsulamento delle anomalie in eccezioni di dominio specifiche (`InvalidPlanStateException`, `ResourceConflictException`) verificate con asserzioni `assertThrows`.
+  *Verifica:* Incapsulamento delle anomalie in eccezioni di dominio specifiche (`InvalidPlanStateException`, `ResourceConflictException`).
 * **Efficienza (Efficiency):** Utilizzo ottimizzato delle risorse computazionali e tempi di risposta istantanei.  
   *Verifica:* Uso di un database relazionale embedded H2 in-memory/file locale leggero, privo di overhead di rete o processi esterni.
 * **Integrità (Integrity):** Protezione dei dati clinici da modifiche non autorizzate o inconsistenti.  
-  *Verifica:* Incapsulamento restrittivo (information hiding) e separazione dei privilegi tramite modello dei ruoli utente.
+  *Verifica:* Separazione dei privilegi tramite modello dei ruoli utente.
 * **Usabilità (Usability):** Facilità di interazione e chiarezza nella gestione delle sedute e delle agende.  
   *Verifica:* Ispezione euristica dell'interfaccia utente e test di usabilità guidati con scenari tipici.
 
 ### 2. Product Revision (Revisione e Manutenibilità)
 * **Manutenibilità (Maintainability):** Semplicità nel localizzare e correggere difetti o modificare regole di business.  
-  *Verifica:* Rispetto del limite di complessità ciclomatica di McCabe ($CV \le 10$ per metodo) e rispetto del principio di singola responsabilità (SRP).
 * **Testabilità (Testability):** Semplicità nell'isolare e collaudare le singole unità logiche.  
-  *Verifica:* Monitoraggio della copertura del codice con soglia minima target $\ge 75\%$ di Line e Branch Coverage sui package `service` e `model`.
-* **Flessibilità (Flexibility):** Capacità del sistema di accogliere nuovi requisiti o tipologie di trattamento senza stravolgimenti architetturali.  
-  *Verifica:* Adozione di interfacce e pattern strutturali/comportamentali che garantiscono conformità all'Open/Closed Principle.
 
 ### 3. Product Transition (Transizione e Portabilità)
 * **Portabilità (Portability):** Funzionamento trasparente e identico su diverse piattaforme operative (Windows, macOS, Linux).  
   *Verifica:* Utilizzo esclusivo di JDK standard 17+, build gestita interamente tramite `pom.xml` Maven, divieto assoluto di percorsi di file assoluti nel codice.
-* **Riutilizzabilità (Reusability):** Possibilità di impiegare componenti di dominio (es. modulo di calcolo ROM, gestione ruoli) in progetti futuri o come base per la tesi di laurea.  
-  *Verifica:* Basso accoppiamento intermodulare verificato tramite analisi delle dipendenze.
 * **Interoperabilità (Interoperability):** Predisposizione del software a dialogare con strumenti esterni o database standard.  
-  *Verifica:* Strutturazione dei dati conforme a dialetto standard SQL ANSI tramite H2.
+  *Verifica:* Strutturazione dei dati conforme a dialetto standard SQL.
 
 
 ## 10. Pacchetti di Lavoro (Work Breakdown Structure - WBS)
 
 La scomposizione gerarchica delle attività del progetto assegna responsabilità chiare a ciascun componente:
 
-* **WP1 – Project Management & Configuration Setup** *(Resp: Franchini, Mazzoleni)*
+* **WP1 – Project Management & Configuration Setup** *(Resp: Franchini, Mazzoleni, Ghislanzoni)*
   * WP1.1: Stesura iniziale e revisioni progressive del Project Plan (Doc 1).
-  * WP1.2: Inizializzazione repository GitHub, branch protection, `.gitignore` e Kanban Board.
+  * WP1.2: Inizializzazione repository GitHub, branch, `.gitignore` e Kanban Board.
   * WP1.3: Definizione convenzioni di codifica, template di issue e modello di branching.
-* **WP2 – Requirements Engineering & Software Quality** *(Resp: Ivasco, Ghislanzoni)*
-  * WP2.1: Elicitazione dei requisiti clinici e definizione del glossario di dominio.
+* **WP2 – Requirements Engineering & Software Quality** *(Resp: Ivasco)*
+  * WP2.1: Elicitazione dei requisiti clinici.
   * WP2.2: Stesura documento di specifica requisiti software (Doc 3) secondo standard IEEE 830.
   * WP2.3: Definizione delle metriche di qualità del software e conformità al modello McCall.
 * **WP3 – Modelling & System Design** *(Resp: Mazzoleni, Franchini)*
   * WP3.1: Modellazione dei Casi d'Uso (Use Case Diagram e Use Case Specifications).
   * WP3.2: Modellazione statica (Class Diagram di dominio) e generazione codice tramite StarUML/Javazzar.
   * WP3.3: Modellazione dinamica: State Machine Diagram (ciclo piano), Sequence e Activity Diagram.
-  * WP3.4: Stesura Documento 4 (Architettura e Design secondo IEEE 1016, pattern e viste architetturali).
+  * WP3.4: Stesura Documento 4 (Architettura e Design, pattern e viste architetturali).
 * **WP4 – Software Implementation** *(Resp: Tutti i componenti)*
-  * WP4.1: *Database Layer:* Configurazione connessione H2 e implementazione repository DAO *(Ivasco)*.
+  * WP4.1: *Database Layer:* Configurazione database embedded (SQLite) *(Ivasco)*.
   * WP4.2: *Core & Service Layer:* Logica del piano riabilitativo, controlli clinici e algoritmi di valutazione *(Franchini, Ghislanzoni)*.
-  * WP4.3: *User Interface Layer:* Sviluppo interfacce utente e gestione input operatore *(Mazzoleni, Ghislanzoni)*.
-  * WP4.4: *Integration:* Disaccoppiamento inter-package e wiring dei componenti *(Franchini, Mazzoleni)*.
+  * WP4.3: *User Interface Layer:* Sviluppo interfacce utente e gestione input operatore *(Mazzoleni, Franchini)*.
 * **WP5 – Verification, Testing & Static Analysis** *(Resp: Tutti i componenti)*
   * WP5.1: Progettazione e stesura della suite di test unitari JUnit 5 su DB, Service e UI.
   * WP5.2: Misurazione della copertura del codice (Code Coverage) e test sui casi limite.
   * WP5.3: Calcolo analitico della complessità ciclomatica di McCabe e verifica accoppiamento package.
   * WP5.4: Stesura Documento 5 (Testing e Validazione).
-* **WP6 – Refactoring, Maintenance & Final Delivery** *(Resp: Franchini, Ghislanzoni, Mazzoleni, Ivasco)*
-  * WP6.1: Ispezione e rimozione di eventuali code smell e antipattern (Doc 6).
+* **WP6 – Refactoring, Maintenance & Final Delivery** *(Resp: Tutti i componenti)*
+  * WP6.1: Ispezione e rimozione di eventuali antipattern (Doc 6).
   * WP6.2: Finalizzazione Documento 2 (Software Life Cycle, SCM, Team Organization).
   * WP6.3: Consolidamento relazione generale e congelamento release sul branch `main`.
   * WP6.4: Allestimento slide della presentazione orale e predisposizione ambiente per la demo live.
@@ -276,7 +269,7 @@ La scomposizione gerarchica delle attività del progetto assegna responsabilità
 
 * **Condivisione Repository:** Repository GitHub condiviso con accesso collaboratore concesso ai docenti (`garganti`, `silviabonfanti`).
 * **Artefatti di Consegna (Deliverables):**
-  1. Cartella `codice/medicalhub`: Progetto completo Java/Maven importabile ed eseguibile su Eclipse senza errori di compilazione, con tutti i test JUnit 5 passanti (`mvn test` con esito positivo).
+  1. Cartella `codice/`: Crtella contenente i tre progetti maven (MED_database, MED_core, MED_gui).
   2. Cartella `documenti/`: Documentazione tecnica completa suddivisa nei 6 documenti in formato Markdown/PDF conformi alle linee guida.
   3. Cartella `documenti/models/`: File di progetto sorgente `.mdj` di StarUML contenente tutti i diagrammi realizzati.
 * **Presentazione Orale:**

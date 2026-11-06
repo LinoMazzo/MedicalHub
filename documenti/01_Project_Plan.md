@@ -19,7 +19,6 @@
 | **1.0.1** | 03/10/2026 | Franchini Mattia | Aggiunta quarto membro e ricalibrazione budget/tempistiche |
 | **1.1.0** | 05/11/2026 | Mazzoleni Lino | Dettaglio ruoli individuali, analisi rischi operativi, tassonomia della qualità di McCall, standard IEEE 830/1016 e WBS completa |
 
----
 
 ## 1. Introduzione
 
@@ -32,7 +31,6 @@
   4. Suite di test di unità JUnit 5 con report quantitativi di code coverage.
   5. Repository GitHub collaborativo con storico completo e tracciabile di issue, branch, pull request e revisioni tra pari.
 
----
 
 ## 2. Modello di Processo
 
@@ -44,7 +42,6 @@
   * **Sprint 4 (Milestone M4):** Completamento UI, analisi statica del codice (metriche di accoppiamento e complessità), refactoring antipattern, finalizzazione documentazione e preparazione slide.
 * **Criteri di Avanzamento:** Ciascuna milestone è dichiarata completata solo al soddisfacimento della *Definition of Done* (DoD): codice compilabile senza warning bloccanti, test unitari verdi, documentazione allineata e Pull Request approvata collegialmente.
 
----
 
 ## 3. Organizzazione del Progetto
 
@@ -58,7 +55,6 @@
 
 *(Nota: tutti i membri partecipano attivamente alla scrittura del codice Java, alla redazione dei casi di test JUnit 5 e alle Code Review sulle Pull Request).*
 
----
 
 ## 4. Standard, Linee Guida, Procedure
 
@@ -73,15 +69,34 @@
   * **Pull Request (PR) & Code Review:** L'integrazione di una feature su `develop` avviene esclusivamente tramite PR. È richiesta l'approvazione obbligatoria (Approve) di almeno un compagno dopo verifica delle modifiche e dei test.
   * **Convenzione Commit:** Stile *Conventional Commits* (es. `feat:`, `fix:`, `docs:`, `test:`, `refactor:`).
 
----
 
 ## 5. Attività di Gestione
 
-* **Tracciamento Avanzamento:** Utilizzo integrato della **GitHub Project Board (Kanban)** con le colonne operative `To Do`, `In Progress`, `In Review` e `Done`, associando ogni scheda a issue dettagliate con assegnatari specifici.
-* **Comunicazione Interna:** Stand-up meeting bisettimanali (da remoto su Discord o in presenza) per monitorare lo stato delle task, verificare le dipendenze e risolvere impedimenti (*blockers*).
-* **Gestione delle Priorità:** Classificazione dei requisiti e dei task tramite tecnica **MoSCoW** (*Must have, Should have, Could have, Won't have*), per garantire la consegna del nucleo vitale del sistema anche a fronte di vincoli temporali stringenti.
+Le attività di gestione del progetto sono orientate a garantire il rispetto delle scadenze prefissate, il mantenimento di elevati standard qualitativi del codice e un bilanciamento continuo tra requisiti, tempi di consegna e impegno orario dei componenti.
 
----
+#### 5.1 Monitoraggio dell'Avanzamento e Strumenti di Controllo
+Il monitoraggio operativo e temporale è strutturato tramite l'ecosistema GitHub:
+* **GitHub Project Board (Kanban):** Il flusso di lavoro segue una pipeline visiva strutturata in 5 stati operativi:
+  1. *Product Backlog:* raccolta generale di requisiti e idee future.
+  2. *To Do:* task selezionati e pianificati per lo Sprint corrente.
+  3. *In Progress:* task presi in carico (massimo 1 task attivo per componente, per limitare il Work-In-Progress - WIP).
+  4. *In Review:* funzionalità completate in attesa di Code Review su Pull Request.
+  5. *Done:* task collaudati e fusi nel ramo di integrazione.
+
+#### 5.2 Comunicazione Interna e Cerimonie del Team
+Per garantire un allineamento costante e trasparente, il gruppo adotta cerimonie tipiche del framework Agile/Scrum:
+* **Stand-up Meeting Bisettimanali:** Brevi incontri di 15-20 minuti (in presenza o tramite Discord con screen-sharing) focalizzati su tre quesiti: *cosa è stato fatto*, *cosa si farà fino al prossimo meeting* e *quali ostacoli bloccano il flusso*.
+* **Sprint Review & Retrospective:** Al termine di ogni iterazione di 2 settimane, il team valida collegialmente i deliverable completati e analizza retrospettivamente il processo di sviluppo per apportare miglioramenti operativi nello sprint successivo.
+* **Tracciamento Decisionale:** Le decisioni architetturali rilevanti (es. adozione di librerie, modifiche allo schema del database) vengono formalizzate e documentate direttamente nei thread delle Issue o delle Pull Request.
+
+#### 5.3 Criteri di Completamento (Definition of Done - DoD)
+Nessun task o funzionalità può transitare nella colonna *Done* della Kanban Board né essere integrato in `develop` se non soddisfa congiuntamente i seguenti criteri formali:
+1. Il codice compila senza errori ed è formattato secondo le *Oracle Java Code Conventions*.
+2. È stata implementata la relativa suite di test di unità con JUnit 5 con esito positivo (build Maven verde: `mvn clean test`).
+3. L'architettura rispetta il vincolo di aciclicità tra i package (`MED_core`, `MED_database`, `MED_gui`).
+4. La relativa Pull Request è stata esaminata, commentata e approvata formalmente da almeno un compagno di gruppo (Peer Review).
+5. La documentazione correlata (diagrammi StarUML o specifiche dei requisiti) è stata debitamente aggiornata.
+
 
 ## 6. Gestione dei Rischi
 
@@ -95,29 +110,71 @@ L'analisi preventiva identifica i rischi concreti legati allo sviluppo accademic
 | **R4** | **Conflitti di Merge su Git:** Conflitti tra branch dovuti allo sviluppo concorrente da parte di 4 persone sulla stessa base di codice. | Media | Medio | Decomposizione modulare rigida del codice in layer e package separati; pull frequenti da `develop`; divieto di modificare classi assegnate ad altri senza accordo. | Risoluzione collegiale a due del conflitto in sessione dedicata prima di consentire il merge su `develop`. |
 | **R5** | **Indisponibilità temporanea di un componente:** Malattia o impedimenti personali improvvisi che bloccano una componente critica. | Bassa | Medio | Tracciamento trasparente dello stato d'avanzamento su GitHub Issue e documentazione del codice in progress; condivisione continua delle scelte tecniche. | Riassegnazione immediata del task bloccato grazie alla presenza di ruoli secondari intercambiabili. |
 
----
 
 ## 7. Personale
 
-* **Dimensionamento:** 4 persone.
-* **Impegno Individuale:** Circa **35-40 ore a persona**, per un totale di circa **150-160 ore-uomo** distribuite su 8 settimane di attività.
-* **Formazione Richiesta:**
-  * Ripasso avanzato di Java (Collezioni, Generics, Stream API, gestione temporale con `java.time`).
-  * Studio del framework di testing **JUnit 5** e librerie di asserzione.
-  * Studio dei Design Pattern formali (Lethbridge/Van Vliet) e standard IEEE 830/1016.
-  * Studio della configurazione del driver embedded **H2 Database**.
+La pianificazione del personale definisce il dimensionamento del team, l'attribuzione delle responsabilità specialistiche, la distribuzione temporale dello sforzo lavorativo lungo l'intero ciclo di vita del progetto e le attività di formazione necessarie per colmare eventuali gap tecnici.
 
----
+#### 7.1 Dimensionamento e Ruoli Operativi
+Il team è composto da **4 persone**. In conformità al modello *Democratic Decentralized (DD)* adottato, ogni componente è responsabile primario di una specifica area ingegneristica, pur collaborando attivamente all'implementazione del codice e alle attività di code review collegiale:
+
+#### 7.2 Stima e Ripartizione Temporale dello Sforzo (Effort Allocation)
+* **Budget Temporale Complessivo:** Il progetto prevede un impegno stimato di circa **35-40 ore a persona**, per un totale aggregato di circa **150-160 ore-uomo**, distribuite su un arco temporale di **8 settimane** (~4.5 - 5 ore a testa a settimana).
+* **Profilo Temporale del Personale (Carico per Fasi):** L'impegno dei componenti varia dinamicamente in base alla fase del ciclo di vita:
+  * *Fase Iniziale (Settimane 1–2 - Requisiti & Planning):* Massimo sforzo per il Requirements Engineer e l'Architect per la definizione del dominio e la sottomissione del Project Plan. Sforzo iniziale per il Build Engineer (setup repository e Maven).
+  * *Fase Centrale (Settimane 3–5 - Design & Core Development):* Massimo impegno per l'Architect e il Database Specialist per la progettazione dettagliata, la State Machine, la creazione delle tabelle SQLite e lo scheletro delle classi Java.
+  * *Fase di Completamento e Collaudo (Settimane 6–8 - Testing, QA & Final Delivery):* Massimo sforzo per il Test Engineer e il QA Manager per l'esecuzione della suite JUnit, la verifica della copertura, la misurazione delle metriche del codice e la finalizzazione dei 6 documenti della relazione.
+
+| Ruolo / Attività | Settimane 1-2 (Requisiti/Plan) | Settimane 3-5 (Architettura/Sviluppo) | Settimane 6-8 (Testing/Delivery) | Totale Ore |
+| :--- | :---: | :---: | :---: | :---: |
+| **Requirements & Planning** | 22 h | 8 h | 8 h | **38 h** |
+| **Architecture & Design** | 12 h | 20 h | 6 h | **38 h** |
+| **Database & Development** | 8 h | 22 h | 8 h | **38 h** |
+| **Testing & Quality Assurance** | 6 h | 12 h | 20 h | **38 h** |
+| **Totale Ore-Uomo** | **48 h** | **62 h** | **42 h** | **152 h** |
+
+#### 7.3 Piano di Formazione e Colmamento dei Gap (Training Plan)
+Per garantire l'allineamento delle competenze tecniche necessarie alla realizzazione del software, il team ha pianificato percorsi di auto-formazione e studio mirato nelle prime 2 settimane:
+1. **Linguaggio Java Avanzato:** Approfondimento delle funzionalità moderne di Java 17.
+2. **Framework di Testing JUnit 5:** Studio delle asserzioni complesse, gestione delle fixture e configurazione dei plugin Maven Surefire per il reporting.
+3. **Database Embedded SQLite & JDBC:** Studio della sintassi SQL di SQLite, gestione della concorrenza del database su singolo file locale, implementazione del pattern Singleton per prevenire leak di connessioni e gestione dei percorsi relativi (senza path assoluti al filesystem).
+4. **Strumenti di Progettazione e Metriche:** Esercitazioni pratiche sull'uso di **StarUML v5** (creazione di State Machine, Sequence e Class Diagram con generazione del codice) e apprendimento delle metriche di modularità (complessità ciclomatica di McCabe e suite di metriche C&K tramite StanIDE/JDepend).
+
+#### 7.4 Continuità Operativa e Meccanismi di Backup
+Nel caso in cui un membro del team sia temporaneamente indisponibile o impossibilitato a completare un task critico:
+* La tracciabilità dettagliata delle specifiche e lo storico delle issue su GitHub garantiscono che un altro componente possa subentrare nell'attività senza perdita di informazioni.
+* Non sono ammesse dipendenze esclusive: ogni modulo è compreso da almeno due persone grazie al meccanismo obbligatorio delle Pull Request e delle Code Review incrociate.
 
 ## 8. Metodi e Tecniche
 
-* **Ingegneria dei Requisiti:** Elicitazione basata su scenari d'uso, redazione formale SRS conforme a IEEE 830.
-* **Modellazione ad Oggetti (OOAD):** Creazione di Use Case Diagram, Class Diagram, State Machine Diagram (ciclo piano riabilitativo), Sequence Diagram, Activity Diagram, Package e Component Diagram tramite **StarUML v5**.
-* **Sviluppo:** Programmazione Object-Oriented in **Java 17/21** su IDE **Eclipse**, con architettura a layer disaccoppiati (Model, Database/Repository, Service, UI).
-* **Testing:** Suite di collaudo basata su **JUnit 5**, applicando criteri di branch coverage e path coverage sui flussi decisionali critici.
-* **Metriche di Progettazione:** Valutazione della complessità ciclomatica di McCabe ($CV = e - n + p + 1$) e analisi dell'accoppiamento dei package ($C_a, C_e, I, A$) secondo le linee guida del Capitolo 12.
+Questa sezione descrive le metodologie ingegneristiche, i linguaggi, gli ambienti di prova e gli strumenti operativi adottati durante l'intero ciclo di vita del software.
 
----
+#### 8.1 Ingegneria dei Requisiti
+* **Elicitazione:** Analisi di dominio orientata ai processi riabilitativi ortopedici reali, supportata da interviste a stakeholder (fisioterapisti e atleti) e stesura di scenari d'uso tipici ed eccezionali.
+* **Specifica Formale (SRS):** Redazione della specifica dei requisiti software secondo lo standard **IEEE 830**, strutturata con identificatori univoci e gerarchici (es. `REQ-F-xx` per i funzionali, `REQ-NF-xx` per i non funzionali) per garantire la matrice di tracciabilità verso i casi di test.
+
+#### 8.2 Modellazione Orientata agli Oggetti (OOAD)
+La modellazione concettuale e dettagliata è realizzata tramite **StarUML v5** adottando la notazione standard UML 2.x:
+* **Viste Statiche:** Class Diagram di dominio (struttura delle entità cliniche), Package Diagram (organizzazione dei moduli) e Component Diagram (architettura del sistema).
+* **Viste Dinamiche:** 
+  * *Use Case Diagram:* interazione tra gli attori (Paziente, Medico, Fisioterapista, Desk) e i servizi del sistema.
+  * *State Machine Diagram:* modellazione dettagliata e non banale del ciclo di vita del Piano Riabilitativo (da Bozza a Idoneità Rilasciata).
+  * *Sequence & Activity Diagram:* formalizzazione dei flussi di prenotazione congiunta (risorse/operatori) e della gestione delle anomalie cliniche.
+* **Generazione del Codice:** Adozione dell'approccio *Model-Driven* parziale, generando la struttura base delle classi Java e le relative firme dei metodi direttamente dal Class Diagram di StarUML tramite l'estensione Javazzar.
+
+#### 8.3 Sviluppo Software e Build Automation
+* **Linguaggio e Paradigma:** Programmazione orientata agli oggetti avanzata in **Java 17 LTS**, con uso intensivo del Collections Framework.
+* **Stile Architetturale:** Adozione di un'architettura **3-Tier / a Layer disaccoppiati**, suddivisa su **3 progetti Maven distinti**:
+  * `MED_core`: logica di business e modello di dominio.
+  * `MED_database`: strato di accesso ai dati e persistenza.
+  * `MED_gui`: strato di presentazione e interazione utente.
+* **Persistenza Dati:** Utilizzo del database relazionale embedded **SQLite**, integrato tramite driver JDBC (`sqlite-jdbc`). La configurazione adotta esclusivamente percorsi relativi per garantire la totale portabilità del file di database (`medicalhub.db`) su qualsiasi macchina senza dipendenze da percorsi assoluti.
+* **Build Automation:** Gestione unificata di compilazione, dipendenze e packaging tramite **Apache Maven**.
+
+#### 8.4 Controllo di Versione e Gestione della Documentazione
+* **Configuration Management:** Adozione del sistema **Git** ospitato su **GitHub**, governato da un *Feature-Branch Workflow* (divieto di commit diretti su `main`, integrazione su `develop` tramite Pull Request con approvazione obbligatoria).
+* **Cura della Documentazione:** Redazione dei deliverable in formato **Markdown** (versionati direttamente nel repository sotto `/documenti`) ed esportazione finale consolidata in documento PDF unico organizzato a capitoli. Il modello sorgente StarUML (`.mdj`) è mantenuto sincronizzato su GitHub.
+
 
 ## 9. Garanzia di Qualità (Quality Assurance)
 
@@ -151,7 +208,6 @@ La qualità del sistema è governata formalmente attraverso la **Tassonomia dell
 * **Interoperabilità (Interoperability):** Predisposizione del software a dialogare con strumenti esterni o database standard.  
   *Verifica:* Strutturazione dei dati conforme a dialetto standard SQL ANSI tramite H2.
 
----
 
 ## 10. Pacchetti di Lavoro (Work Breakdown Structure - WBS)
 
@@ -186,7 +242,6 @@ La scomposizione gerarchica delle attività del progetto assegna responsabilità
   * WP6.3: Consolidamento relazione generale e congelamento release sul branch `main`.
   * WP6.4: Allestimento slide della presentazione orale e predisposizione ambiente per la demo live.
 
----
 
 ## 11. Risorse
 
@@ -199,7 +254,6 @@ La scomposizione gerarchica delle attività del progetto assegna responsabilità
   * **Modellazione UML & Code Gen:** StarUML v5 con estensione Javazzar.
   * **Collaboration & Tracking:** GitHub (Git repository, Pull Requests, Issues, Projects Kanban), Discord per meeting di allineamento e screen-sharing.
 
----
 
 ## 12. Budget e Programma Temporale
 
@@ -210,7 +264,6 @@ La scomposizione gerarchica delle attività del progetto assegna responsabilità
   * **Settimana 5-6 (Sprint 3 - Inizio Dicembre):** Avanzamento WP4 (Sviluppo Core, Service, H2 DB, UI) e WP5 (Prime classi di test JUnit 5) $\rightarrow$ **Milestone M3**.
   * **Settimana 7-8 (Sprint 4 - Fine Dicembre/Pre-esame):** Conclusione WP5 (Coverage e calcolo metriche McCabe), WP6 (Doc 2, Doc 5, Doc 6, refactoring).  
 
----
 
 ## 13. Gestione dei Cambiamenti (Change Management)
 
@@ -218,7 +271,6 @@ La scomposizione gerarchica delle attività del progetto assegna responsabilità
 * Le richieste di modifica vengono analizzate collegialmente durante gli stand-up meeting per valutarne l'impatto tecnico, le dipendenze e l'aggravio in ore-uomo.
 * In caso di approvazione, la modifica viene recepita nella documentazione tecnica e tracciata con incremento del numero di versione nella tabella del **Registro delle Modifiche** posta all'inizio di ciascun documento.
 
----
 
 ## 14. Consegna
 

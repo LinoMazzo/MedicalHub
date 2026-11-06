@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.medicalhub</groupId>
+        <artifactId>medicalhub-parent</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <artifactId>med-gui</artifactId>
+    <packaging>jar</packaging>
+
+    <name>MedicalHub GUI</name>
+    <description>Modulo GUI: Interfaccia Desktop Swing con JTabbedPane per test e dimostrazione delle funzionalità</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.medicalhub</groupId>
+            <artifactId>med-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.medicalhub</groupId>
+            <artifactId>med-database</artifactId>
+        </dependency>
+        <!-- FlatLaf Modern UI Framework -->
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf</artifactId>
+            <version>3.4.1</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Plugin per pacchettizzare il JAR eseguibile con classe Main -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>com.medicalhub.gui.Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

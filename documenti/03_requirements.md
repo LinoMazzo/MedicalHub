@@ -32,13 +32,13 @@ MedicalHub è un'applicazione per centri di fisioterapia e medicina dello sport 
 
 **Scenari di esempio.** *S1*: Luca, calciatore operato al crociato, viene registrato con la convenzione della sua federazione; la dottoressa crea il piano dal protocollo Post-Op LCA, Luca prenota solo in orari in cui fisioterapista e sala sono liberi e, superati i test di uscita, riceve l'idoneità. *S2*: in una seduta il fisioterapista registra dolore 8/10 e una flessione di 15° inferiore alla volta precedente; il sistema avvisa la dottoressa, che sospende il piano e lo riprende dopo la visita di controllo.
 
-**Prioritizzazione.** Come previsto dal Project Plan si usa MoSCoW: **Must have** = nucleo del sistema, implementato e testato entro la milestone M3; **Should have** = importante, entro M4; **Could have** = solo se il tempo lo consente; i **Won't have** sono in §3.4. I requisiti funzionali sono 32: 20 M, 10 S, 2 C.
+**Prioritizzazione.** Come previsto dal Project Plan si usa MoSCoW: **Must have** = nucleo del sistema, implementato e testato entro la milestone M3; **Should have** = importante, entro M4; **Could have** = solo se il tempo lo consente; i **Won't have** sono in §3.4. I requisiti funzionali sono 32: 20 M, 11 S, 2 C.
 
 ## 3. Descrizione generale
 
 ### 3.1 Prospettiva del prodotto
 
-MedicalHub è un prodotto nuovo e autonomo che sostituisce carta e fogli di calcolo: un'applicazione Java eseguita localmente, con database H2 embedded, senza servizi esterni né rete, organizzata a livelli (Controller, Service, Repository, Model).
+MedicalHub è un prodotto nuovo e autonomo che sostituisce carta e fogli di calcolo: un'applicazione Java eseguita localmente, con database SQLite embedded e senza servizi esterni, che espone un frontend web locale servito da Spring Boot tramite API RESTful. L'architettura è a 3 moduli Maven disaccoppiati: MED_core contiene il dominio e la logica applicativa, MED_database incapsula la persistenza su SQLite e MED_gui integra Spring Boot Web con i controller RESTful.
 
 ### 3.2 Utenti
 
@@ -49,7 +49,7 @@ MedicalHub è un prodotto nuovo e autonomo che sostituisce carta e fogli di calc
 
 ### 3.3 Vincoli e assunzioni
 
-- Vincoli del corso: Java, progetto Eclipse con Maven, database embedded, nessun servizio esterno, nessun percorso assoluto, sviluppo su GitHub; circa 110 ore-uomo in 4 sprint.
+- Vincoli del corso: Java, progetto Eclipse con Maven, database embedded, nessun servizio esterno, nessun percorso assoluto, sviluppo su GitHub; circa 150-160 ore-uomo in 4 sprint.
 - I dati sanitari sono categorie particolari di dati personali (GDPR, art. 9): il prototipo usa solo dati fittizi, ma con controllo degli accessi e tracciabilità.
 - Le misure sono inserite a mano; le notifiche sono interne all'applicazione (niente email o SMS).
 - La firma dell'idoneità è **applicativa** (riautenticazione del medico e impronta hash del certificato).
@@ -69,8 +69,10 @@ Ogni requisito ha un identificatore univoco (`REQ-I` interfacce, `REQ-F` funzion
 |----|-------------------------|
 | REQ-I-01 (M) | L'interfaccia, in italiano, deve mostrare solo le funzioni del ruolo dell'utente e validare i dati prima del salvataggio (campi obbligatori, intervalli di §4.5), indicando il campo errato.<br>*Motivazione:* gli utenti hanno competenze informatiche eterogenee e poco tempo (§3.2): un'interfaccia limitata al proprio ruolo e una validazione immediata riducono gli errori di inserimento. |
 | REQ-I-02 (S) | Le sedute devono essere consultabili per giorno o settimana, filtrate per fisioterapista o risorsa.<br>*Motivazione:* sostituisce le agende cartacee: il fisioterapista vede il proprio turno, la Segreteria l'occupazione di sale e macchinari. |
-| REQ-I-03 (M) | La persistenza deve usare JDBC su un database H2 embedded; il log deve usare log4j 2, gestito come dipendenza Maven.<br>*Motivazione:* i docenti devono eseguire il progetto su un altro PC con solo JDK e Maven, senza installare un DBMS. |
-| REQ-I-04 (S) | Certificati e report devono essere esportabili in PDF.<br>*Motivazione:* l'applicazione non ha rete né email: il PDF permette di consegnare certificati e report fuori dal sistema. |
+| REQ-I-03 (M) | La persistenza deve usare JDBC su database SQLite embedded locale ; il log deve usare log4j 2 gestito via Maven.
+Motivazione: i docenti devono eseguire il progetto su un altro PC con solo JDK e Maven, senza installare un DBMS. |
+| REQ-I-04 (S) | L'applicazione è fruibile tramite browser web locale su protocollo HTTP, con interfaccia responsiva; certificati e report sono esportabili in PDF.
+Motivazione: il frontend web servito da Spring Boot non richiede installazioni lato client; poiché il sistema non invia email, il PDF permette di consegnare certificati e report fuori dal sistema. |
 
 ### 4.2 Requisiti funzionali
 
@@ -136,9 +138,16 @@ Ogni requisito ha un identificatore univoco (`REQ-I` interfacce, `REQ-F` funzion
 | REQ-F-31 (S) | Il sistema deve generare un promemoria per il paziente 24 ore prima di ogni seduta e alla scadenza dei questionari.<br>*Motivazione:* riduce assenze e questionari non compilati. |
 | REQ-F-32 (S) | Il Medico deve poter generare in PDF il report di avanzamento del piano e il Fisioterapista la scheda degli esercizi domiciliari. |
 
+**Richieste di modifica**
+
+| ID | Requisito / Motivazione |
+|----|-------------------------|
+| REQ-F-33 (S) | Il sistema deve consentire di tracciare le richieste di modifica al piano (change request) da parte del fisioterapista: ogni richiesta riporta piano, autore, data, motivazione e stato, e il Medico curante la accetta o la rifiuta.
+Motivazione: il fisioterapista vede il paziente a ogni seduta, ma solo il medico può modificare il piano; la richiesta tracciata mantiene la continuità tra i due (§1.1). |
+
 ### 4.3 Casi d'uso
 
-Gli attori Paziente, Medico, Fisioterapista e Segreteria specializzano l'attore astratto **Utente** (*Autenticarsi*); Medico e Fisioterapista specializzano anche **Personale sanitario** (*Consultare cartella riabilitativa*). L'attore **Timer** avvia promemoria e solleciti.
+Gli attori Paziente, Medico, Fisioterapista e Segreteria specializzano l'attore astratto Utente (Autenticarsi); Medico e Fisioterapista specializzano anche Personale sanitario (Consultare cartella riabilitativa). L'attore Timer avvia promemoria e solleciti.
 
 Il diagramma dei casi d'uso è diviso in quattro viste per leggibilità (sorgente completa: `MedicalHub.mdj`).
 
@@ -304,6 +313,17 @@ Il comportamento del sistema dipende dallo stato del piano (REQ-F-09, F-13, F-17
 
 IN_CORSO e IN_RIVALUTAZIONE_INTERMEDIA sono sottostati dello stato composito **ATTIVO**: la sospensione vale per entrambi e la ripresa riporta nel sottostato di partenza (storia superficiale, H).
 
+A livello di implementazione Java, nel package `com.medicalhub.core.state`, gli stati sopra descritti corrispondono alle classi che implementano `RehabPlanState`:
+
+| Stato (documento) | Classe Java |
+|---|---|
+| BOZZA | `DraftState` |
+| PRESCRITTO | `PrescribedState` |
+| IN_CORSO | `InProgressState` |
+| SOSPESO_PER_COMPLICANZA | `SuspendedState` |
+| COMPLETATO_CON_SUCCESSO | `CompletedState` |
+| IDONEITA_RILASCIATA | `ClearedState` |
+
 ```mermaid
 stateDiagram-v2
     [*] --> BOZZA : creaPiano
@@ -368,8 +388,8 @@ Transizioni interne: *after(7 giorni) / sollecito al medico* in IN_RIVALUTAZIONE
 ### 4.6 Requisiti non funzionali
 
 - **REQ-NF-01 (S) Prestazioni** — La verifica di disponibilità e la ricerca di alternative devono richiedere meno di 1 s con 1.000 pazienti, 30 risorse e 50.000 sedute; le altre operazioni interattive meno di 2 s.
-- **REQ-NF-02 (M) Vincoli di progetto** — Progetto Eclipse Maven in Java 17 o superiore, test JUnit 5 in `src/test/java`; `mvn clean test` deve passare su un PC con solo JDK e Maven, senza servizi esterni né percorsi assoluti.
-- **REQ-NF-03 (M) Architettura** — Livelli controller, service, repository e model senza cicli tra package; Oracle Java Code Conventions.
+- **REQ-NF-02 (M) Vincoli di progetto** — Progetto Eclipse Maven multi-modulo (MED_core, MED_database, MED_gui) in Java 17 o superiore, test JUnit 5 in src/test/java; mvn clean test deve passare su un PC con solo JDK e Maven, senza servizi esterni né percorsi assoluti.
+- **REQ-NF-03 (M) Architettura** — 3 moduli Maven disaccoppiati: MED_gui (Spring Boot Web, controller RESTful), MED_core (dominio e logica applicativa) e MED_database (persistenza, incapsula SQLite); nessun ciclo tra moduli e tra package; Oracle Java Code Conventions.
 - **REQ-NF-04 (M) Sicurezza** — Password salvate solo come hash con salt (PBKDF2); ogni operazione clinica registrata nel log di audit con utente, data e oggetto, mai con dati sanitari in chiaro.
 - **REQ-NF-05 (C) Sicurezza** — Blocco dell'account per 15 minuti dopo 5 accessi falliti consecutivi.
 - **REQ-NF-06 (M) Affidabilità** — Operazioni su più entità atomiche; nessuna perdita delle operazioni già confermate in caso di chiusura improvvisa.
@@ -378,16 +398,69 @@ Transizioni interne: *after(7 giorni) / sollecito al medico* in IN_RIVALUTAZIONE
 - **REQ-NF-09 (S) Usabilità** — Dopo 15 minuti di dimostrazione un fisioterapista registra una seduta in meno di 2 minuti; messaggi di errore in italiano, senza dettagli tecnici.
 - **REQ-NF-10 (S) Portabilità** — Funzionamento senza modifiche su Windows, macOS e Linux con JDK 17 o superiore.
 
+### 4.7 Matrice di tracciabilità
+
+Ogni requisito di interfaccia e funzionale è collegato ai casi d'uso di §4.3 e ai moduli software coinvolti (§3.1).
+
+| Requisito | Caso d'uso | Moduli |
+|---|---|---|
+| REQ-I-01 | trasversale | MED_gui |
+| REQ-I-02 | UC-04, UC-20 | MED_gui |
+| REQ-I-03 | trasversale | MED_database |
+| REQ-I-04 | UC-19, UC-22 | MED_gui |
+| REQ-F-01 | UC-01 | MED_gui, MED_core, MED_database |
+| REQ-F-02 | UC-02 | MED_gui, MED_core, MED_database |
+| REQ-F-03 | UC-03 | MED_gui, MED_core, MED_database |
+| REQ-F-04 | UC-03 | MED_gui, MED_core, MED_database |
+| REQ-F-05 | UC-03 | MED_gui, MED_core, MED_database |
+| REQ-F-06 | UC-05 | MED_gui, MED_core, MED_database |
+| REQ-F-07 | UC-06 | MED_gui, MED_core, MED_database |
+| REQ-F-08 | UC-06 | MED_gui, MED_core, MED_database |
+| REQ-F-09 | UC-06 | MED_gui, MED_core, MED_database |
+| REQ-F-10 | UC-04 | MED_gui, MED_core, MED_database |
+| REQ-F-11 | UC-08 | MED_gui, MED_core, MED_database |
+| REQ-F-12 | UC-09 | MED_gui, MED_core, MED_database |
+| REQ-F-13 | UC-07 | MED_gui, MED_core, MED_database |
+| REQ-F-14 | UC-10 | MED_gui, MED_core, MED_database |
+| REQ-F-15 | UC-10, UC-11 | MED_gui, MED_core, MED_database |
+| REQ-F-16 | UC-20 | MED_gui, MED_core, MED_database |
+| REQ-F-17 | UC-11 | MED_gui, MED_core, MED_database |
+| REQ-F-18 | UC-12, UC-13 | MED_core, MED_database |
+| REQ-F-19 | UC-14 | MED_gui, MED_core, MED_database |
+| REQ-F-20 | UC-15 | MED_gui, MED_core, MED_database |
+| REQ-F-21 | UC-20 | MED_gui, MED_core, MED_database |
+| REQ-F-22 | UC-16 | MED_gui, MED_core, MED_database |
+| REQ-F-23 | UC-17 | MED_gui, MED_core, MED_database |
+| REQ-F-24 | UC-18 | MED_gui, MED_core, MED_database |
+| REQ-F-25 | UC-18 | MED_gui, MED_core, MED_database |
+| REQ-F-26 | UC-19 | MED_gui, MED_core, MED_database |
+| REQ-F-27 | UC-23 | MED_core, MED_database |
+| REQ-F-28 | UC-21 | MED_gui, MED_core, MED_database |
+| REQ-F-29 | UC-21 | MED_gui, MED_core, MED_database |
+| REQ-F-30 | trasversale | MED_gui, MED_core, MED_database |
+| REQ-F-31 | UC-23 | MED_core, MED_database |
+| REQ-F-32 | UC-22 | MED_gui, MED_core, MED_database |
+| REQ-F-33 | — | MED_gui, MED_core, MED_database |
+
+### 4.8 Requisiti e design pattern
+
+| Requisiti | Pattern | Classi |
+|---|---|---|
+| REQ-F-01, REQ-F-03 | Player-Role | `Person`, `UserRole` |
+| REQ-F-09, REQ-F-15, REQ-F-22 | State | `RehabPlanState` |
+| REQ-F-18, REQ-F-30, REQ-F-31 | Observer | `DoctorAlertNotifier`, `PatientReminderNotifier` |
+| REQ-I-03 | Singleton | `DatabaseConnection` |
+
 ## 5. Qualità del software
 
-Come nel cap. 6 di [2] si usa il modello ISO/IEC 9126 [4], trattando la sicurezza come caratteristica autonoma come nella ISO/IEC 25010, data la natura sanitaria dei dati. Le qualità che guidano il progetto, in ordine di priorità:
+Come nel cap. 6 di [2] si usa il modello ISO/IEC 9126, nella sua evoluzione ISO/IEC 25010 [4] che tratta la sicurezza come caratteristica autonoma, data la natura sanitaria dei dati. Le caratteristiche sono raggruppate secondo le tre categorie di McCall già introdotte nel Project Plan (Documento 1, §9): Product Operations (accuratezza, sicurezza, affidabilità, usabilità, efficienza), Product Revision (manutenibilità) e Product Transition (portabilità). Le qualità che guidano il progetto, in ordine di priorità:
 
 - **Funzionalità – accuratezza (alta).** Un errore sui criteri di uscita rimanderebbe in campo un atleta non guarito, uno sulle prenotazioni bloccherebbe il centro: regole e formule sono esplicite (§4.5) e testate sui valori limite (REQ-F-11, REQ-F-24, REQ-F-25).
 - **Sicurezza (alta).** I dati sanitari richiedono riservatezza e tracciabilità: accesso per ruolo, hash delle password, log di audit (REQ-F-01, REQ-NF-04).
 - **Affidabilità (alta).** Piano e agenda sono l'unica fonte di verità: operazioni atomiche e test di ogni transizione di stato (REQ-NF-06).
 - **Manutenibilità (alta).** Protocolli, tariffe e notifiche cambiano nel tempo e la qualità del codice è valutata: parti variabili isolate con design pattern (Documento 4), copertura ≥ 75%, McCabe ≤ 10, nessun ciclo tra package (REQ-NF-03, REQ-NF-07, REQ-NF-08).
 - **Usabilità (media).** Il personale ha poco tempo e registra i dati durante il turno: interfaccia per ruolo e validazione immediata (REQ-I-01, REQ-NF-09).
-- **Portabilità (media).** I docenti devono eseguire il progetto su un altro PC: Maven, H2 embedded, percorsi relativi (REQ-NF-02, REQ-NF-10).
+- **Portabilità (media).** I docenti devono eseguire il progetto su un altro PC: Maven, SQLite embedded, percorsi relativi (REQ-NF-02, REQ-NF-10).
 - **Efficienza (bassa).** I volumi di un singolo centro sono modesti (REQ-NF-01).
 
 **Qualità esterne e interne.** Seguendo la distinzione della ISO/IEC 9126, le qualità esterne (accuratezza, sicurezza, affidabilità, usabilità, portabilità, efficienza) si osservano sul sistema in esecuzione e si verificano con test e prove d'uso; la manutenibilità è una qualità interna e si misura sul codice con metriche statiche.
@@ -406,4 +479,11 @@ Come nel cap. 6 di [2] si usa il modello ISO/IEC 9126 [4], trattando la sicurezz
 
 **Qualità non perseguite.** L'interoperabilità non è un obiettivo della versione 1.0: il sistema non scambia dati con altri sistemi (§3.4).
 
-**Compromessi.** La riautenticazione è richiesta solo per la firma dell'idoneità, per non appesantire l'uso quotidiano; con circa 110 ore-uomo i requisiti *Could* si sacrificano per primi, per non compromettere qualità e test dei *Must*.
+**Compromessi.** La riautenticazione è richiesta solo per la firma dell'idoneità, per non appesantire l'uso quotidiano; con circa 150–160 ore-uomo i requisiti * Could* si sacrificano per primi, per non compromettere qualità e test dei * Must*.
+
+## 6. Riferimenti
+
+- [1] IEEE Std 830-1998, *IEEE Recommended Practice for Software Requirements Specifications*.
+- [2] H. van Vliet, *Software Engineering: Principles and Practice*, 3rd Edition, Wiley, 2008.
+- [3] T. C. Lethbridge, R. Laganière, *Object-Oriented Software Engineering*, McGraw-Hill, 2005.
+- [4] ISO/IEC 25010:2011, *Systems and software engineering — Systems and software Quality Requirements and Evaluation (SQuaRE)*.

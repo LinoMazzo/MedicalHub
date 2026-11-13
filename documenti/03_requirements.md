@@ -387,16 +387,18 @@ Transizioni interne: *after(7 giorni) / sollecito al medico* in IN_RIVALUTAZIONE
 
 ### 4.6 Requisiti non funzionali
 
-- **REQ-NF-01 (S) Prestazioni** — La verifica di disponibilità e la ricerca di alternative devono richiedere meno di 1 s con 1.000 pazienti, 30 risorse e 50.000 sedute; le altre operazioni interattive meno di 2 s.
-- **REQ-NF-02 (M) Vincoli di progetto** — Progetto Eclipse Maven multi-modulo (MED_core, MED_database, MED_gui) in Java 17 o superiore, test JUnit 5 in src/test/java; mvn clean test deve passare su un PC con solo JDK e Maven, senza servizi esterni né percorsi assoluti.
-- **REQ-NF-03 (M) Architettura** — 3 moduli Maven disaccoppiati: MED_gui (Spring Boot Web, controller RESTful), MED_core (dominio e logica applicativa) e MED_database (persistenza, incapsula SQLite); nessun ciclo tra moduli e tra package; Oracle Java Code Conventions.
-- **REQ-NF-04 (M) Sicurezza** — Password salvate solo come hash con salt (PBKDF2); ogni operazione clinica registrata nel log di audit con utente, data e oggetto, mai con dati sanitari in chiaro.
-- **REQ-NF-05 (C) Sicurezza** — Blocco dell'account per 15 minuti dopo 5 accessi falliti consecutivi.
-- **REQ-NF-06 (M) Affidabilità** — Operazioni su più entità atomiche; nessuna perdita delle operazioni già confermate in caso di chiusura improvvisa.
-- **REQ-NF-07 (M) Manutenibilità** — Branch e line coverage ≥ 75% sui package service e model (EclEmma/JaCoCo).
-- **REQ-NF-08 (S) Manutenibilità** — Complessità ciclomatica ≤ 10 per metodo; nessun problema critico segnalato da SonarLint o PMD.
-- **REQ-NF-09 (S) Usabilità** — Dopo 15 minuti di dimostrazione un fisioterapista registra una seduta in meno di 2 minuti; messaggi di errore in italiano, senza dettagli tecnici.
-- **REQ-NF-10 (S) Portabilità** — Funzionamento senza modifiche su Windows, macOS e Linux con JDK 17 o superiore.
+| ID | Requisito |
+|----|-----------|
+| REQ-NF-01 (S) | **Prestazioni** — La verifica di disponibilità e la ricerca di alternative devono richiedere meno di 1 s con 1.000 pazienti, 30 risorse e 50.000 sedute; le altre operazioni interattive meno di 2 s. |
+| REQ-NF-02 (M) | **Vincoli di progetto** — Progetto Eclipse Maven multi-modulo (MED_core, MED_database, MED_gui) in Java 17 o superiore, test JUnit 5 in `src/test/java`; `mvn clean test` deve passare su un PC con solo JDK e Maven, senza servizi esterni né percorsi assoluti. |
+| REQ-NF-03 (M) | **Architettura** — 3 moduli Maven disaccoppiati: MED_gui (Spring Boot Web, controller RESTful), MED_core (dominio e logica applicativa) e MED_database (persistenza, incapsula SQLite); nessun ciclo tra moduli e tra package; Oracle Java Code Conventions. |
+| REQ-NF-04 (M) | **Sicurezza** — Password salvate solo come hash con salt (PBKDF2); ogni operazione clinica registrata nel log di audit con utente, data e oggetto, mai con dati sanitari in chiaro. |
+| REQ-NF-05 (C) | **Sicurezza** — Blocco dell'account per 15 minuti dopo 5 accessi falliti consecutivi. |
+| REQ-NF-06 (M) | **Affidabilità** — Operazioni su più entità atomiche; nessuna perdita delle operazioni già confermate in caso di chiusura improvvisa. |
+| REQ-NF-07 (M) | **Manutenibilità** — Branch e line coverage ≥ 75% sui package service e model (EclEmma/JaCoCo). |
+| REQ-NF-08 (S) | **Manutenibilità** — Complessità ciclomatica ≤ 10 per metodo; nessun problema critico segnalato da SonarLint o PMD. |
+| REQ-NF-09 (S) | **Usabilità** — Dopo 15 minuti di dimostrazione un fisioterapista registra una seduta in meno di 2 minuti; messaggi di errore in italiano, senza dettagli tecnici. |
+| REQ-NF-10 (S) | **Portabilità** — Funzionamento senza modifiche su Windows, macOS e Linux con JDK 17 o superiore. |
 
 ### 4.7 Matrice di tracciabilità
 

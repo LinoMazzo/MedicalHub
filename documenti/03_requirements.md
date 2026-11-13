@@ -9,6 +9,7 @@
 | Versione | Data | Autore | Descrizione delle modifiche |
 |---|---|---|---|
 | 1.0.0 | 12-10-2026 | Ivasco Riccardo | Prima stesura
+| 1.1.0 | 13-11-2026 | Ivasco Riccardo | Major updates
 
 ## 1. Introduzione
 
@@ -32,7 +33,7 @@ MedicalHub è un'applicazione per centri di fisioterapia e medicina dello sport 
 
 **Scenari di esempio.** *S1*: Luca, calciatore operato al crociato, viene registrato con la convenzione della sua federazione; la dottoressa crea il piano dal protocollo Post-Op LCA, Luca prenota solo in orari in cui fisioterapista e sala sono liberi e, superati i test di uscita, riceve l'idoneità. *S2*: in una seduta il fisioterapista registra dolore 8/10 e una flessione di 15° inferiore alla volta precedente; il sistema avvisa la dottoressa, che sospende il piano e lo riprende dopo la visita di controllo.
 
-**Prioritizzazione.** Come previsto dal Project Plan si usa MoSCoW: **Must have** = nucleo del sistema, implementato e testato entro la milestone M3; **Should have** = importante, entro M4; **Could have** = solo se il tempo lo consente; i **Won't have** sono in §3.4. I requisiti funzionali sono 32: 20 M, 11 S, 2 C.
+**Prioritizzazione.** Come previsto dal Project Plan si usa MoSCoW: **Must have** = nucleo del sistema, implementato e testato entro la milestone M3; **Should have** = importante, entro M4; **Could have** = solo se il tempo lo consente; i **Won't have** sono in §3.4. I requisiti funzionali sono 33: 20 M, 11 S, 2 C.
 
 ## 3. Descrizione generale
 
@@ -57,7 +58,7 @@ MedicalHub è un prodotto nuovo e autonomo che sostituisce carta e fogli di calc
 
 ### 3.4 Esclusi dalla versione 1.0 (*Won't have*)
 
-App mobile o portale web con API REST, integrazione con il Fascicolo Sanitario Elettronico, pagamenti elettronici, firma digitale qualificata, sensori indossabili e stime di recupero con intelligenza artificiale: tutte possibili estensioni future.
+Integrazione con il Fascicolo Sanitario Elettronico, pagamenti elettronici, firma digitale qualificata, sensori indossabili e stime di recupero con intelligenza artificiale: tutte possibili estensioni future.
 
 ## 4. Requisiti specifici
 
@@ -69,10 +70,8 @@ Ogni requisito ha un identificatore univoco (`REQ-I` interfacce, `REQ-F` funzion
 |----|-------------------------|
 | REQ-I-01 (M) | L'interfaccia, in italiano, deve mostrare solo le funzioni del ruolo dell'utente e validare i dati prima del salvataggio (campi obbligatori, intervalli di §4.5), indicando il campo errato.<br>*Motivazione:* gli utenti hanno competenze informatiche eterogenee e poco tempo (§3.2): un'interfaccia limitata al proprio ruolo e una validazione immediata riducono gli errori di inserimento. |
 | REQ-I-02 (S) | Le sedute devono essere consultabili per giorno o settimana, filtrate per fisioterapista o risorsa.<br>*Motivazione:* sostituisce le agende cartacee: il fisioterapista vede il proprio turno, la Segreteria l'occupazione di sale e macchinari. |
-| REQ-I-03 (M) | La persistenza deve usare JDBC su database SQLite embedded locale ; il log deve usare log4j 2 gestito via Maven.
-Motivazione: i docenti devono eseguire il progetto su un altro PC con solo JDK e Maven, senza installare un DBMS. |
-| REQ-I-04 (S) | L'applicazione è fruibile tramite browser web locale su protocollo HTTP, con interfaccia responsiva; certificati e report sono esportabili in PDF.
-Motivazione: il frontend web servito da Spring Boot non richiede installazioni lato client; poiché il sistema non invia email, il PDF permette di consegnare certificati e report fuori dal sistema. |
+| REQ-I-03 (M) | La persistenza deve usare JDBC su database SQLite embedded locale; il log deve usare log4j 2 gestito via Maven.<br>*Motivazione:* i docenti devono eseguire il progetto su un altro PC con solo JDK e Maven, senza installare un DBMS. |
+| REQ-I-04 (S) | L'applicazione è fruibile tramite browser web locale su protocollo HTTP, con interfaccia responsiva; certificati e report sono esportabili in PDF.<br>*Motivazione:* il frontend web servito da Spring Boot non richiede installazioni lato client; poiché il sistema non invia email, il PDF permette di consegnare certificati e report fuori dal sistema. |
 
 ### 4.2 Requisiti funzionali
 
@@ -315,14 +314,16 @@ IN_CORSO e IN_RIVALUTAZIONE_INTERMEDIA sono sottostati dello stato composito **A
 
 A livello di implementazione Java, nel package `com.medicalhub.core.state`, gli stati sopra descritti corrispondono alle classi che implementano `RehabPlanState`:
 
-| Stato (documento) | Classe Java |
-|---|---|
-| BOZZA | `DraftState` |
-| PRESCRITTO | `PrescribedState` |
-| IN_CORSO | `InProgressState` |
-| SOSPESO_PER_COMPLICANZA | `SuspendedState` |
-| COMPLETATO_CON_SUCCESSO | `CompletedState` |
-| IDONEITA_RILASCIATA | `ClearedState` |
+| Stato (documento) | Classe Java | Note implementative |
+|---|---|---|
+| BOZZA | `DraftState` | Stato iniziale |
+| PRESCRITTO | `PrescribedState` | In attesa della prima seduta |
+| IN_CORSO | `InProgressState` | Sedute attive |
+| IN_RIVALUTAZIONE_INTERMEDIA | `InProgressState` | Sottostato di verifica con flag di blocco prenotazioni |
+| SOSPESO_PER_COMPLICANZA | `SuspendedState` | Blocco per dolore/infortunio |
+| COMPLETATO_CON_SUCCESSO | `CompletedState` | Criteri di uscita superati |
+| IDONEITA_RILASCIATA | `ClearedState` | Certificato emesso (stato finale) |
+| ANNULLATO | — | Chiusura amministrativa del piano |
 
 ```mermaid
 stateDiagram-v2
@@ -442,7 +443,7 @@ Ogni requisito di interfaccia e funzionale è collegato ai casi d'uso di §4.3 e
 | REQ-F-30 | trasversale | MED_gui, MED_core, MED_database |
 | REQ-F-31 | UC-23 | MED_core, MED_database |
 | REQ-F-32 | UC-22 | MED_gui, MED_core, MED_database |
-| REQ-F-33 | — | MED_gui, MED_core, MED_database |
+| REQ-F-33 | UC-13, UC-16 | MED_gui, MED_core, MED_database |
 
 ### 4.8 Requisiti e design pattern
 

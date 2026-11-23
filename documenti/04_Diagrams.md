@@ -1,3 +1,4 @@
+```mermaid
 stateDiagram-v2
 %% title MedicalHub - Ciclo di vita del Piano Riabilitativo
 
@@ -35,3 +36,4 @@ InCorso --> Annullato : approvaRichiestaAnnullamento [richiestaPazientePresente 
 Sospeso --> Annullato : approvaRichiestaAnnullamento [richiestaPazientePresente && ruolo == Medico] / eliminaSeduteInCascata()
 
 Annullato --> [*]
+```

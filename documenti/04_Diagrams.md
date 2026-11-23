@@ -1,4 +1,3 @@
-```mermaid
 stateDiagram-v2
 %% title MedicalHub - Ciclo di vita del Piano Riabilitativo
 
@@ -12,26 +11,27 @@ state "Annullato" as Annullato
 
 [*] --> Bozza
 
-Bozza --> Prescritto : prescriviPiano [isClinico] / registraDataStato(), notificaPaziente()
-Prescritto --> InCorso : avviaTrattamento [isClinico] / notificaAvvioTrattamento()
+Bozza --> Prescritto : prescriviPiano [ruolo == Medico || ruolo == Admin] / registraDataStato(), notificaPaziente()
 
-Prescritto --> Sospeso : sospendiPiano [isClinico] / salvaMotivoSospensione(), notificaPaziente()
-InCorso --> Sospeso : sospendiPiano [isClinico] / salvaMotivoSospensione(), notificaPaziente()
-Sospeso --> InCorso : riprendiTrattamento [isClinico] / notificaRipresa()
+Prescritto --> InCorso : avviaTrattamento [ruolo == Medico || ruolo == Admin] / notificaAvvioTrattamento()
 
-InCorso --> Completato : completaPiano [seduteComplete && lsiOk && isClinico] / registraCompletamento(), notificaPaziente()
-Completato --> IdoneitaRilasciata : rilasciaIdoneita [lsiOk && isClinico] / generaCertificatoIdoneita(), notificaClearance()
+Prescritto --> Sospeso : sospendiPiano [ruolo == Medico || ruolo == Admin] / salvaMotivoSospensione(), notificaPaziente()
+InCorso --> Sospeso : sospendiPiano [ruolo == Medico || ruolo == Admin] / salvaMotivoSospensione(), notificaPaziente()
+Sospeso --> InCorso : riprendiTrattamento [ruolo == Medico || ruolo == Admin] / notificaRipresa()
+
+InCorso --> Completato : completaPiano [seduteEseguite >= sedutePianificate && criteriLsiSuperati && (ruolo == Medico || ruolo == Admin)] / registraCompletamento(), notificaPaziente()
+
+Completato --> IdoneitaRilasciata : rilasciaIdoneita [criteriLsiSuperati && (ruolo == Medico || ruolo == Admin)] / generaCertificatoIdoneita(), notificaClearance()
 IdoneitaRilasciata --> [*]
 
-Bozza --> Annullato : annullaPiano [isClinico] / eliminaSeduteInCascata(), notificaAnnullamento()
-Prescritto --> Annullato : annullaPiano [isClinico] / eliminaSeduteInCascata(), notificaAnnullamento()
-InCorso --> Annullato : annullaPiano [isClinico] / eliminaSeduteInCascata(), notificaAnnullamento()
-Sospeso --> Annullato : annullaPiano [isClinico] / eliminaSeduteInCascata(), notificaAnnullamento()
+Bozza --> Annullato : annullaPiano [ruolo == Medico || ruolo == Admin] / eliminaSeduteInCascata(), notificaAnnullamento()
+Prescritto --> Annullato : annullaPiano [ruolo == Medico || ruolo == Admin] / eliminaSeduteInCascata(), notificaAnnullamento()
+InCorso --> Annullato : annullaPiano [ruolo == Medico || ruolo == Admin] / eliminaSeduteInCascata(), notificaAnnullamento()
+Sospeso --> Annullato : annullaPiano [ruolo == Medico || ruolo == Admin] / eliminaSeduteInCascata(), notificaAnnullamento()
 
-Bozza --> Annullato : approvaRichiestaAnnullamento [reqPaziente && isMedico] / eliminaSeduteInCascata()
-Prescritto --> Annullato : approvaRichiestaAnnullamento [reqPaziente && isMedico] / eliminaSeduteInCascata()
-InCorso --> Annullato : approvaRichiestaAnnullamento [reqPaziente && isMedico] / eliminaSeduteInCascata()
-Sospeso --> Annullato : approvaRichiestaAnnullamento [reqPaziente && isMedico] / eliminaSeduteInCascata()
+Bozza --> Annullato : approvaRichiestaAnnullamento [richiestaPazientePresente && ruolo == Medico] / eliminaSeduteInCascata()
+Prescritto --> Annullato : approvaRichiestaAnnullamento [richiestaPazientePresente && ruolo == Medico] / eliminaSeduteInCascata()
+InCorso --> Annullato : approvaRichiestaAnnullamento [richiestaPazientePresente && ruolo == Medico] / eliminaSeduteInCascata()
+Sospeso --> Annullato : approvaRichiestaAnnullamento [richiestaPazientePresente && ruolo == Medico] / eliminaSeduteInCascata()
 
 Annullato --> [*]
-```
